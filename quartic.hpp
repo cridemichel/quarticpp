@@ -43,6 +43,7 @@ class quartic: public numeric_limits<ntype> {
   ntype eps05, meps, maxf, maxf2, maxf3, scalfact, cubic_rescal_fact;
   int maxdigits;
   ntype goaleps;
+  const cmplx I = sqrt(-1);
   bool deflated;
     //ntype (quartic<ntype,N>::*func) (ntype x);
   ntype oqs_max2(ntype a, ntype b)
@@ -73,9 +74,41 @@ class quartic: public numeric_limits<ntype> {
 	    			       cmplx aq, cmplx bq, cmplx cq, cmplx dq);
   inline ntype oqs_calc_err_abcd(ntype a, ntype b, ntype c, ntype d, ntype aq, ntype bq, ntype cq, ntype dq);
   inline ntype oqs_calc_err_abc(ntype a, ntype b, ntype c, ntype aq, ntype bq, ntype cq, ntype dq); 
+  inline void NRabcdCCmplx(cmplx a, cmplx b, cmplx c, cmplx d, cmplx& AQ, cmplx& BQ, cmplx& CQ, cmplx& DQ);
   inline void oqs_NRabcd(ntype a, ntype b, ntype c, ntype d, ntype& AQ, ntype& BQ, ntype& CQ, ntype& DQ);
   inline void oqs_solve_quadratic(ntype a, ntype b, cmplx roots[2]);
-
+  ntype oqs_calc_err_ldlt_cmplx(cmplx b, cmplx c, cmplx d, cmplx d2, 
+                                 cmplx l1, cmplx l2, cmplx l3)
+    {
+      /* Eqs. (29) and (30) in the manuscript */
+      ntype sum;
+      sum =  (b==0)?cabs(d2 + l1*l1 + 2.0*l3):cabs(((d2 + l1*l1 + 2.0*l3)-b)/b);
+      sum += (c==0)?cabs(2.0*d2*l2 + 2.0*l1*l3):cabs(((2.0*d2*l2 + 2.0*l1*l3)-c)/c);
+      sum += (d==0)?cabs(d2*l2*l2 + l3*l3):cabs(((d2*l2*l2 + l3*l3)-d)/d);
+      return sum;
+    }
+  ntype oqs_calc_err_abc_cmplx(cmplx a, cmplx b, cmplx c, cmplx aq, 
+                              cmplx bq, cmplx cq, cmplx dq)
+    {
+      /* Eqs. (48)-(51) in the manuscript */
+      ntype sum;
+      sum = (c==0)?cabs(bq*cq + aq*dq):cabs(((bq*cq + aq*dq) - c)/c);
+      sum +=(b==0)?cabs(bq + aq*cq + dq):cabs(((bq + aq*cq + dq) - b)/b);
+      sum +=(a==0)?cabs(aq + cq):cabs(((aq + cq) - a)/a);
+      return sum;
+    }
+  ntype oqs_calc_err_abcd_ccmplx(cmplx a, cmplx b, cmplx c, cmplx d, 
+                                 cmplx aq, cmplx bq, cmplx cq, cmplx dq)
+    {
+      /* Eqs. (68) and (69) in the manuscript */
+      ntype sum;
+      sum = (d==0)?cabs(bq*dq):cabs((bq*dq-d)/d);
+      sum += (c==0)?cabs(bq*cq + aq*dq):cabs(((bq*cq + aq*dq) - c)/c);
+      sum +=(b==0)?cabs(bq + aq*cq + dq):cabs(((bq + aq*cq + dq) - b)/b);
+      sum +=(a==0)?cabs(aq + cq):cabs(((aq + cq) - a)/a);
+      return sum;
+    }
+  
 public:
   void show(void)
     {
@@ -319,10 +352,10 @@ template <class ntype, int N, class cmplx> void quartic<ntype,N,cmplx>::oqs_solv
 {
   /* find analytically the dominant root of a depressed cubic x^3+b*x+c 
    * where coefficients b and c are large (see sec. 2.2 in the manuscript) */ 
-  complex double asol[3], Am, Ap, ApB, AmB, Q, R, A, B, QR, QRSQ, KK, RQ;
-  const double PI2=M_PI/2.0, TWOPI=2.0*M_PI;
-  double theta, sqrtQr, Ar, Br, QRr, QRSQr, KKr, RQr;
-  const double sqrt3=sqrt(3.0)/2.0;
+  cmplx asol[3], Am, Ap, ApB, AmB, Q, R, A, B, QR, QRSQ, KK, RQ;
+  const ntype PI2=M_PI/2.0, TWOPI=2.0*M_PI;
+  ntype theta, sqrtQr, Ar, Br, QRr, QRSQr, KKr, RQr;
+  const ntype sqrt3=sqrt(3.0)/2.0;
   int arereal=0;
   Q = -b/3.0;
   R = 0.5*c;
@@ -417,21 +450,21 @@ template <class ntype, int N, class cmplx> void quartic<ntype,N,cmplx>::oqs_solv
       asol[0] = ApB; /* this is always largest root even if A=B */
       asol[1] = -0.5*ApB + I*sqrt3*(AmB);
       asol[2] = -0.5*ApB - I*sqrt3*(AmB);
-      *sol=asol[0];
-      if (cabs(*sol) < cabs(asol[1]))
-        *sol=asol[1];
-      if (cabs(*sol) < cabs(asol[2]))
-        *sol=asol[2];
+      sol=asol[0];
+      if (cabs(sol) < cabs(asol[1]))
+        sol=asol[1];
+      if (cabs(sol) < cabs(asol[2]))
+        sol=asol[2];
     }
 }
 template <class ntype, int N, class cmplx> void quartic<ntype,N,cmplx>::oqs_solve_cubic_analytic_depressed_cmplx(cmplx b, cmplx c, cmplx& sol)
 {
   /* find analytically the dominant root of a depressed cubic x^3+b*x+c 
    * (see sec. 2.2 in the manuscript) */ 
-  complex double K, Q, R, Q3, R2, A, B, Ap, Am, asol[3], ApB, AmB;
+  cmplx K, Q, R, Q3, R2, A, B, Ap, Am, asol[3], ApB, AmB;
   int arereal=0;
-  double theta, Q3r, R2r, sqrtQr, Ar, Br;
-  const double sqrt3=sqrt(3.0)/2.0;
+  ntype theta, Q3r, R2r, sqrtQr, Ar, Br;
+  const ntype sqrt3=sqrt(3.0)/2.0;
   Q = -b/3.0;
   R = 0.5*c;
   if (cabs(Q) > 1E102 || cabs(R) > 1E154)
@@ -490,11 +523,11 @@ template <class ntype, int N, class cmplx> void quartic<ntype,N,cmplx>::oqs_solv
       asol[0] = ApB; /* this is always largest root even if A=B */
       asol[1] = -0.5*ApB + I*sqrt3*(AmB);
       asol[2] = -0.5*ApB - I*sqrt3*(AmB);
-      *sol=asol[0];
-      if (cabs(*sol) < cabs(asol[1]))
-        *sol=asol[1];
-      if (cabs(*sol) < cabs(asol[2]))
-        *sol=asol[2];
+      sol=asol[0];
+      if (cabs(sol) < cabs(asol[1]))
+        sol=asol[1];
+      if (cabs(sol) < cabs(asol[2]))
+        sol=asol[2];
     }
 }
 
@@ -664,7 +697,7 @@ template <class ntype, int N, class cmplx> void quartic<ntype,N,cmplx>::oqs_calc
             }
         }
     }
-  *phi0 = x;
+  phi0 = x;
 }
 template <class ntype, int N, class cmplx> void  quartic<ntype,N, cmplx>::oqs_calc_phi0(ntype a, ntype b, ntype c, ntype d, ntype& phi0, int scaled)
 {
@@ -787,7 +820,7 @@ template <class ntype, int N, class cmplx> ntype  quartic<ntype,N,cmplx>::oqs_ca
 }
 template <class ntype, int N, class cmplx> 
 ntype quartic<ntype,N, cmplx>::oqs_calc_err_abcd_cmplx(ntype a, ntype b,  ntype c, ntype d, cmplx aq, 
-                                                         cmplx bq, cmplx cq, cmplx dq)
+                                                       cmplx bq, cmplx cq, cmplx dq)
 {
   /* Eq. (53) in the manuscript for complex alpha1 (aq), beta1 (bq), alpha2 (cq) and beta2 (dq) */
   ntype sum;
@@ -840,12 +873,14 @@ template <class ntype, int N, class cmplx> ntype  quartic<ntype,N,cmplx>::oqs_ca
     sum +=abs(((aq + cq) - a)/a);
   return sum;
 }
-template <class ntype, int N,class cmplx> void quartic<ntype,N,cmplx>::oqs_NRabcd(ntype a, ntype b, ntype c, ntype d, ntype& AQ, ntype& BQ, ntype& CQ, ntype& DQ)
+template <class ntype, int N,class cmplx> void quartic<ntype,N,cmplx>::NRabcdCCmplx(cmplx a, cmplx b, cmplx c, cmplx d, 
+                  cmplx& AQ, cmplx& BQ, cmplx& CQ, cmplx& DQ)
 {
   /* Newton-Raphson described in sec. 2.3 of the manuscript for complex
    * coefficients a,b,c,d */
   int iter, k1, k2;
-  ntype x02, errf, errfold, xold[4], x[4], dx[4], det, Jinv[4][4], fvec[4], vr[4];
+  cmplx x02, xold[4], dx[4], x[4], det, Jinv[4][4], fvec[4], vr[4];
+  ntype errf, errfold;
   x[0] = AQ;
   x[1] = BQ;
   x[2] = CQ;
@@ -861,17 +896,18 @@ template <class ntype, int N,class cmplx> void quartic<ntype,N,cmplx>::oqs_NRabc
   errf=0;
   for (k1=0; k1 < 4; k1++)
     {
-      if (vr[k1]==0)
-        errf += abs(fvec[k1]);
-      else
-        errf +=abs(fvec[k1]/vr[k1]);
+      errf += (vr[k1]==0)?cabs(fvec[k1]):cabs(fvec[k1]/vr[k1]);
     }
+
+  if (errf==0)
+    return;
+
   for (iter = 0; iter < 8; iter++)
     {
       x02 = x[0]-x[2];
       det = x[1]*x[1] + x[1]*(-x[2]*x02 - 2.0*x[3]) + x[3]*(x[0]*x02 + x[3]);
       if (det==0.0)
-	break;
+        break;
       Jinv[0][0] = x02;
       Jinv[0][1] = x[3] - x[1];
       Jinv[0][2] = x[1]*x[2] - x[0]*x[3];
@@ -889,45 +925,45 @@ template <class ntype, int N,class cmplx> void quartic<ntype,N,cmplx>::oqs_NRabc
       Jinv[3][2] = x[3]*Jinv[0][1];
       Jinv[3][3] = x[3]*Jinv[0][2];
       for (k1=0; k1 < 4; k1++)
-	{
-	  dx[k1] = 0;
-	  for (k2=0; k2 < 4; k2++)
-	    dx[k1] += Jinv[k1][k2]*fvec[k2];
-	}
+        {
+          dx[k1] = 0;
+          for (k2=0; k2 < 4; k2++)
+            dx[k1] += Jinv[k1][k2]*fvec[k2];
+        }
       for (k1=0; k1 < 4; k1++)
-      	xold[k1] = x[k1];
+        xold[k1] = x[k1];
 
       for (k1=0; k1 < 4; k1++)
-	{
-	  x[k1] += -dx[k1]/det;
-	}
+        {
+          x[k1] += -dx[k1]/det;
+        }
+
       fvec[0] = x[1]*x[3] - d;
       fvec[1] = x[1]*x[2] + x[0]*x[3] - c;
       fvec[2] = x[1] + x[0]*x[2] + x[3] - b;
       fvec[3] = x[0] + x[2] - a; 
+
       errfold = errf;
       errf=0;
       for (k1=0; k1 < 4; k1++)
-	{
-        if (vr[k1]==0)
-	  errf += abs(fvec[k1]);
-        else
-	  errf += abs(fvec[k1]/vr[k1]);
-	}
+        {
+          errf += (vr[k1]==0)?cabs(fvec[k1]):cabs(fvec[k1]/vr[k1]);
+        }
       if (errf==0)
-	break;
+        break;
       if (errf >= errfold)
-	{
-	  for (k1=0; k1 < 4; k1++)
-	    x[k1] = xold[k1];
-	  break;
-	}
+        {
+          for (k1=0; k1 < 4; k1++)
+            x[k1] = xold[k1];
+          break;
+        }
     }
   AQ=x[0];
   BQ=x[1];
   CQ=x[2];
   DQ=x[3];
 }
+
 template <class ntype, int N,class cmplx> void  quartic<ntype,N,cmplx>::oqs_solve_quadratic(ntype a, ntype b, cmplx roots[2])
 { 
   ntype div,sqrtd,diskr,zmax,zmin;
@@ -1283,7 +1319,7 @@ template <class ntype, int N,class cmplx> void quartic<ntype,N,cmplx>::oqs_quart
   if (isnan(creal(phi0))||isinf(creal(phi0))||
       isnan(cimag(phi0))||isinf(cimag(phi0)))
     {
-      rfact = quart_rescal_fact;
+      rfact = scalfact;
       a /= rfact;
       rfactsq = rfact*rfact;
       b /= rfactsq;
@@ -1408,7 +1444,7 @@ template <class ntype, int N,class cmplx> void quartic<ntype,N,cmplx>::oqs_quart
       ccx = ccxv[kmin];
     }
   /* Case III: d2 is 0 or approximately 0 (in this case check which solution is better) */
-  if (cabs(d2) <= macheps_cmplx*oqs_max3_cmplx(cabs(2.*b/3.), cabs(phi0), cabs(l1*l1))) 
+  if (cabs(d2) <= meps*oqs_max3(cabs(2.*b/3.), cabs(phi0), cabs(l1*l1))) 
     {
       d3 = d - l3*l3;
       err0 = oqs_calc_err_abcd_ccmplx(a, b, c, d, acx, bcx, ccx, dcx);
@@ -1438,10 +1474,10 @@ template <class ntype, int N,class cmplx> void quartic<ntype,N,cmplx>::oqs_quart
       cq=creal(ccx);
       dq=creal(dcx);
       oqs_NRabcd_cmplx(creal(a),creal(b),creal(c),creal(d),&aq,&bq,&cq,&dq);      
-      oqs_solve_quadratic_cmplx(aq,bq,qroots);
+      solve_quadratic(aq,bq,qroots);
       roots[0]=qroots[0];
       roots[1]=qroots[1];        
-      oqs_solve_quadratic_cmplx(cq,dq,qroots);
+      solve_quadratic(cq,dq,qroots);
       roots[2]=qroots[0];
       roots[3]=qroots[1];
     }
