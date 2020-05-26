@@ -32,20 +32,11 @@ class quartic: public numeric_limits<ntype> {
   static const int n=4;
   pvector<ntype> coeff;
   pvector<ntype> cmon;
-  pvector<ntype> bd0;
-  pvector<ntype> bd1;
-  pvector<ntype> bd;
-  pvector<ntype> deflcoeff0;
-  pvector<ntype> deflcoeff1;
-  pvector<ntype> deflcoeff;
-  ntype px, dpx; 
-  int imaxarg1,imaxarg2;
   ntype eps05, meps, maxf, maxf2, maxf3, scalfact, cubic_rescal_fact;
   int maxdigits;
   ntype goaleps;
   const cmplx I = sqrt(-1);
-  bool deflated;
-    //ntype (quartic<ntype,N>::*func) (ntype x);
+  int is_cmplx;
   ntype oqs_max2(ntype a, ntype b)
     {
       if (a >= b)
@@ -170,7 +161,6 @@ public:
       return bn;
     }
 
-
    ntype evalpoly(ntype x)
     {
       // evaluate polynomail via Horner's formula 
@@ -234,13 +224,21 @@ public:
       return sum;
     }
 
-  int degree()
+  inline void find_roots(pvector<cmplx,N>& roots)
     {
-      return n; 
-    }
-  inline void find_roots(pvector<cmplx,N>& roots, bool polish=false, bool backup=true)
-    {
-      oqs_quartic_solver(roots);
+      if (is_cmplx == -1)
+        {
+          cout << "[ERROR] You have to set the quartic coefficients with set_coeff method first!\n";
+          exit(-1);
+        }
+      else if (is_cmplx == 0)
+        {
+          oqs_quartic_solver(roots);
+        }
+      else
+        {
+          oqs_quartic_solver_cmplx(roots);
+        }
     }
   // get machine precision for "ntype" type (ntype can float, double, long double)
   ntype epsilon()
@@ -257,21 +255,28 @@ public:
       eps05 = pow(numeric_limits<ntype>::epsilon(),0.5);
       maxf= getmax();
       maxdigits = numeric_limits<ntype>::digits10-1;
-      //force_hqr=0;
       maxf2 = pow(maxf,0.5)/10.0;
       maxf3 = pow(maxf,1.0/3.0)/10.0;
       scalfact = pow(maxf,1.0/4.0)/1.618034;
       cubic_rescal_fact = pow(maxf, 1.0/3.0)/1.618034;
       goaleps=numeric_limits<ntype>::epsilon();   
-      deflated=false;
+      is_cmplx=-1;
    }
-  
+
+  void set_coeff(pvector<ntype,N+1> v)
+    {
+      is_cmplx = 1;
+      coeff = v;
+    }
+  void set_coeff(pvector<cmplx,N+1> v)
+    {
+      is_cmplx = 0;
+      coeff = v;
+    }
+
   quartic() 
     {
       init_const();
-     //std::cout << "max2= " << maxf2<< " max3=" << maxf3 << "\n";
-      //printf("%.15G\n", maxf);
-      //std::cout << "macheps= " << std::setprecision(35) << meps << "\n";
     }
 };
 // quartics with OQS
