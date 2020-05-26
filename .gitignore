@@ -2,3 +2,5 @@
 Session.vim
 .viminfo
 quartic
+quartic_mp
+compile_commands.json

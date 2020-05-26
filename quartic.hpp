@@ -11,7 +11,13 @@
 #include <vector>
 #include <array>
 #ifdef OQS_MULTIPLE_PRECISION
+#include <boost/multiprecision/mpc.hpp>
 #include <boost/multiprecision/mpfr.hpp>
+using namespace boost;
+using namespace boost::multiprecision;
+using namespace boost::multiprecision::backends;
+using mpdbl=number<mpfr_float_backend<200>>;
+using mpcmplx=number<mpc_complex_backend<200>>;
 #endif
 #define Sqr(x) ((x)*(x))
 using namespace std;
@@ -368,14 +374,14 @@ template <class ntype, class cmplx> void quartic<ntype,cmplx>::oqs_solve_cubic_a
     {
       if (abs(Q.real()) < abs(R.real()))
         {
-          QRr=(Q/R).real();
+          QRr=cmplx(Q/R).real();
           QRSQr=QRr*QRr; 
           KKr=1.0 - Q.real()*QRSQr;
         }
       else
         {
-          RQr = (R/Q).real();
-          KKr = copysign(1.0,Q.real())*(RQr*RQr/Q.real()-1.0);
+          RQr = cmplx(R/Q).real();
+          KKr = copysign(ntype(1.0),ntype(Q.real()))*(RQr*RQr/Q.real()-1.0);
         }
 
       if (KKr < 0.0)
@@ -390,10 +396,10 @@ template <class ntype, class cmplx> void quartic<ntype,cmplx>::oqs_solve_cubic_a
       else
         {
           if (abs(Q.real()) < abs(R.real()))
-            Ar = -copysign(1.0,R.real())*cbrt(abs(R.real())*(1.0+sqrt(KKr)));
+            Ar = -copysign(ntype(1.0),ntype(R.real()))*cbrt(abs(R.real())*(1.0+sqrt(KKr)));
           else
             {
-              Ar = -copysign(1.0,R.real())*cbrt(abs(R.real())+sqrt(abs(Q.real()))*abs(Q.real())*sqrt(KKr));
+              Ar = -copysign(ntype(1.0),ntype(R.real()))*cbrt(abs(R.real())+sqrt(abs(Q.real()))*abs(Q.real())*sqrt(KKr));
             }
           if (Ar==0.0)
             Br=0.0;
@@ -467,8 +473,8 @@ template <class ntype, class cmplx> void quartic<ntype,cmplx>::oqs_solve_cubic_a
   if (Q.imag()==0 && R.imag()==0)
     {
       arereal=1;
-      Q3r = (Sqr(Q)*Q).real();
-      R2r = (Sqr(R)).real();
+      Q3r = cmplx(Sqr(Q)*Q).real();
+      R2r = cmplx(Sqr(R)).real();
     }
   else
     {
@@ -489,7 +495,7 @@ template <class ntype, class cmplx> void quartic<ntype,cmplx>::oqs_solve_cubic_a
         }
       else
         {
-          Ar = -copysign(1.0,R.real())*pow(abs(R.real()) + sqrt(R2r - Q3r),1.0/3.0);
+          Ar = -copysign(ntype(1.0),ntype(R.real()))*pow(abs(R.real()) + sqrt(R2r - Q3r),1.0/3.0);
           if (Ar==0.0)
             Br=0.0;
           else
@@ -587,7 +593,7 @@ template <class ntype, class cmplx> void quartic<ntype,cmplx>::oqs_calc_phi0_cmp
   /* eq. (87) */ 
   if (a.imag()==0 && b.imag()==0)
     {
-      diskrr=(9.0*a*a-24.0*b).real();                    
+      diskrr=cmplx(9.0*a*a-24.0*b).real();                    
       if(diskrr > 0.0)
         { 
           diskrr=sqrt(diskrr);
@@ -1381,11 +1387,11 @@ template <class ntype, class cmplx> void quartic<ntype,cmplx>::oqs_quartic_solve
   cmplx acx1, bcx1, ccx1, dcx1,acx,bcx,cdiskr,zx1,zx2,zxmax,zxmin, ccx, dcx;
   cmplx l2m[12], d2m[12], bl311, dml3l3; 
   cmplx a,b,c,d,phi0,d2,d3,l1,l2,l3,acxv[3],ccxv[3],gamma,del2,qroots[2];
-  double res[12], resmin, err0, err1;
-  double errmin, errv[3];
+  ntype res[12], resmin, err0, err1;
+  ntype errmin, errv[3];
   int k1, k, kmin, nsol;
-  double aq, bq, cq, dq;
-  double rfactsq, rfact=1.0;
+  ntype aq, bq, cq, dq;
+  ntype rfactsq, rfact=1.0;
   if (coeff[4]==0.0)
     {
       printf("That's not a quartic!\n");
