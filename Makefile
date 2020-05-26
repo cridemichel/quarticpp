@@ -1,11 +1,11 @@
 ifeq (,$(findstring intercept,$(CXX)))
-CXX=g++-9
+CXX=g++
 endif
 #ifneq ($(CC),intercept-c)
 ifeq (,$(findstring intercept,$(CC)))
-CC=gcc-9
+CC=gcc
 endif
-BOOST_LIB=-L /usr/local/lib -lmpfr
+BOOST_LIB=-L /usr/local/lib -lmpc -lmpfr
 CXXFLAGS= -Wall -std=c++17 -O3
 CFLAGS= -Wall -O3 
 HEADERS=./quartic.hpp ./pvector.hpp
