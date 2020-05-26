@@ -16,8 +16,8 @@
 using namespace boost;
 using namespace boost::multiprecision;
 using namespace boost::multiprecision::backends;
-using mpdbl=number<mpfr_float_backend<200>>;
-using mpcmplx=number<mpc_complex_backend<200>>;
+using mpdbl=number<mpfr_float_backend<50>>;
+using mpcmplx=number<mpc_complex_backend<50>>;
 #endif
 #define Sqr(x) ((x)*(x))
 using namespace std;
