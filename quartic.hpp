@@ -10,22 +10,11 @@
 #include <cstdlib>
 #include <vector>
 #include <array>
-//#include <boost/multiprecision/mpfr.hpp>
-
+#ifdef OQS_MULTIPLE_PRECISION
+#include <boost/multiprecision/mpfr.hpp>
+#endif
 #define Sqr(x) ((x)*(x))
-template <class ntype>
-inline ntype SIGN(ntype a, ntype b)
-{
-  if ((b) > 0)
-    return abs(a);
-  else
-    return -abs(a);
-}
-
 using namespace std;
-template<class T>
-inline const T MAX(const T &a, const T &b)
-        {return b > a ? (b) : (a);}
 
 template <class ntype, int N=-1, class cmplx=complex<ntype>> 
 class quartic: public numeric_limits<ntype> {
