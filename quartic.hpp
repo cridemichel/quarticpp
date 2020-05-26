@@ -257,12 +257,12 @@ public:
 
   void set_coeff(pvector<ntype,5> v)
     {
-      is_cmplx = 1;
+      is_cmplx = 0;
       coeff = v;
     }
   void set_coeff(pvector<cmplx,5> v)
     {
-      is_cmplx = 0;
+      is_cmplx = 1;
       coeff = v;
     }
 
