@@ -756,7 +756,7 @@ public:
       int i;
       if (str!=NULL)
 	cout << str;
-      if (maxdigits==0)
+      if (maxdigits<=0)
         maxdigits=32;
       cout << "{";
       for (i=0; i < N; i++)
