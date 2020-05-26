@@ -39,7 +39,6 @@ class quartic: public numeric_limits<ntype> {
       t = oqs_max2(a,b);
       return oqs_max2(t,c);
     }
-  inline void solve_quadratic(pvector<cmplx,2>& sol);
   inline void oqs_quartic_solver(pvector<cmplx,4>& roots);
   inline void oqs_quartic_solver_cmplx(pvector<cmplx,4>& roots);      
   inline void oqs_solve_cubic_analytic_depressed_handle_inf(ntype b, ntype c, ntype& sol);
@@ -61,9 +60,9 @@ class quartic: public numeric_limits<ntype> {
     {
       /* Eqs. (29) and (30) in the manuscript */
       ntype sum;
-      sum =  (b==0)?cabs(d2 + l1*l1 + 2.0*l3):cabs(((d2 + l1*l1 + 2.0*l3)-b)/b);
-      sum += (c==0)?cabs(2.0*d2*l2 + 2.0*l1*l3):cabs(((2.0*d2*l2 + 2.0*l1*l3)-c)/c);
-      sum += (d==0)?cabs(d2*l2*l2 + l3*l3):cabs(((d2*l2*l2 + l3*l3)-d)/d);
+      sum =  (b==cmplx(0))?abs(d2 + l1*l1 + 2.0*l3):abs(((d2 + l1*l1 + 2.0*l3)-b)/b);
+      sum += (c==cmplx(0))?abs(2.0*d2*l2 + 2.0*l1*l3):abs(((2.0*d2*l2 + 2.0*l1*l3)-c)/c);
+      sum += (d==cmplx(0))?abs(d2*l2*l2 + l3*l3):abs(((d2*l2*l2 + l3*l3)-d)/d);
       return sum;
     }
   ntype oqs_calc_err_abc_cmplx(cmplx a, cmplx b, cmplx c, cmplx aq, 
@@ -71,9 +70,9 @@ class quartic: public numeric_limits<ntype> {
     {
       /* Eqs. (48)-(51) in the manuscript */
       ntype sum;
-      sum = (c==0)?cabs(bq*cq + aq*dq):cabs(((bq*cq + aq*dq) - c)/c);
-      sum +=(b==0)?cabs(bq + aq*cq + dq):cabs(((bq + aq*cq + dq) - b)/b);
-      sum +=(a==0)?cabs(aq + cq):cabs(((aq + cq) - a)/a);
+      sum = (c==cmplx(0))?abs(bq*cq + aq*dq):abs(((bq*cq + aq*dq) - c)/c);
+      sum +=(b==cmplx(0))?abs(bq + aq*cq + dq):abs(((bq + aq*cq + dq) - b)/b);
+      sum +=(a==cmplx(0))?abs(aq + cq):abs(((aq + cq) - a)/a);
       return sum;
     }
   ntype oqs_calc_err_abcd_ccmplx(cmplx a, cmplx b, cmplx c, cmplx d, 
@@ -81,13 +80,41 @@ class quartic: public numeric_limits<ntype> {
     {
       /* Eqs. (68) and (69) in the manuscript */
       ntype sum;
-      sum = (d==0)?cabs(bq*dq):cabs((bq*dq-d)/d);
-      sum += (c==0)?cabs(bq*cq + aq*dq):cabs(((bq*cq + aq*dq) - c)/c);
-      sum +=(b==0)?cabs(bq + aq*cq + dq):cabs(((bq + aq*cq + dq) - b)/b);
-      sum +=(a==0)?cabs(aq + cq):cabs(((aq + cq) - a)/a);
+      sum = (d==cmplx(0))?abs(bq*dq):abs((bq*dq-d)/d);
+      sum += (c==cmplx(0))?abs(bq*cq + aq*dq):abs(((bq*cq + aq*dq) - c)/c);
+      sum +=(b==cmplx(0))?abs(bq + aq*cq + dq):abs(((bq + aq*cq + dq) - b)/b);
+      sum +=(a==cmplx(0))?abs(aq + cq):abs(((aq + cq) - a)/a);
       return sum;
     }
-  
+  void solve_quadratic(ntype a, ntype b, cmplx roots[2])
+    { 
+      ntype div,sqrtd,diskr,zmax,zmin;
+      diskr=a*a-4*b;   
+      if(diskr>=0.0)
+        {
+          if(a>=0.0)
+            div=-a-sqrt(diskr);
+          else
+            div=-a+sqrt(diskr);
+
+          zmax=div/2;
+
+          if(zmax==0.0)
+            zmin=0.0;
+          else
+            zmin=b/zmax;
+          roots[0]=cmplx(zmax,0.0);
+          roots[1]=cmplx(zmin,0.0);
+        } 
+      else
+        {   
+          sqrtd = sqrt(-diskr);
+          roots[0]=cmplx(-a/2,sqrtd/2);
+          roots[1]=cmplx(-a/2,-sqrtd/2);      
+        }   
+    }
+
+
 public:
   void show(void)
     {
@@ -312,6 +339,7 @@ template <class ntype, class cmplx> void quartic<ntype,cmplx>::oqs_solve_cubic_a
       sol = A+B;
     }
 }
+
 template <class ntype, class cmplx> void quartic<ntype,cmplx>::oqs_solve_cubic_analytic_depressed_handle_inf_cmplx(cmplx b, cmplx c, cmplx& sol)
 {
   /* find analytically the dominant root of a depressed cubic x^3+b*x+c 
@@ -323,7 +351,7 @@ template <class ntype, class cmplx> void quartic<ntype,cmplx>::oqs_solve_cubic_a
   int arereal=0;
   Q = -b/3.0;
   R = 0.5*c;
-  if (R==0)
+  if (R==cmplx(0))
     {
       sol=sqrt(-b);
       return;
@@ -381,9 +409,9 @@ template <class ntype, class cmplx> void quartic<ntype,cmplx>::oqs_solve_cubic_a
           QR=Q/R;
           QRSQ=QR*QR; 
           KK=1.0 - Q*QRSQ;
-          Ap = -cpow(R*(1.0+csqrt(KK)), 1.0/3.0);
-          Am = -cpow(R*(1.0-csqrt(KK)), 1.0/3.0);
-          if (cabs(Ap) > cabs(Am))
+          Ap = -pow(R*(1.0+sqrt(KK)), 1.0/3.0);
+          Am = -pow(R*(1.0-sqrt(KK)), 1.0/3.0);
+          if (abs(Ap) > abs(Am))
             A = Ap;
           else
             {
@@ -431,16 +459,16 @@ template <class ntype, class cmplx> void quartic<ntype,cmplx>::oqs_solve_cubic_a
   const ntype sqrt3=sqrt(3.0)/2.0;
   Q = -b/3.0;
   R = 0.5*c;
-  if (cabs(Q) > 1E102 || cabs(R) > 1E154)
+  if (abs(Q) > 1E102 || abs(R) > 1E154)
     {
       oqs_solve_cubic_analytic_depressed_handle_inf_cmplx(b, c, sol);
       return;
     }
-  if (cimag(Q)==0 && cimag(R)==0)
+  if (Q.imag()==0 && R.imag()==0)
     {
       arereal=1;
-      Q3r = creal(Sqr(Q)*Q);
-      R2r = creal(Sqr(R));
+      Q3r = (Sqr(Q)*Q).real();
+      R2r = (Sqr(R)).real();
     }
   else
     {
@@ -452,29 +480,29 @@ template <class ntype, class cmplx> void quartic<ntype,cmplx>::oqs_solve_cubic_a
     {
       if (R2r < Q3r)
         {
-          theta = acos(creal(R)/sqrt(Q3r));
-          sqrtQr=-2.0*sqrt(creal(Q));
+          theta = acos(R.real()/sqrt(Q3r));
+          sqrtQr=-2.0*sqrt(Q.real());
           if (theta < M_PI/2) 
-            *sol = sqrtQr*cos(theta/3.0);
+            sol = sqrtQr*cos(theta/3.0);
           else 
-            *sol = sqrtQr*cos((theta+2.0*M_PI)/3.0);
+            sol = sqrtQr*cos((theta+2.0*M_PI)/3.0);
         }
       else
         {
-          Ar = -copysign(1.0,creal(R))*pow(fabs(creal(R)) + sqrt(R2r - Q3r),1.0/3.0);
+          Ar = -copysign(1.0,R.real())*pow(abs(R.real()) + sqrt(R2r - Q3r),1.0/3.0);
           if (Ar==0.0)
             Br=0.0;
           else
-            Br = creal(Q)/Ar;
-          *sol = Ar+Br; /* this is always largest root even if A=B */
+            Br = Q.real()/Ar;
+          sol = Ar+Br; /* this is always largest root even if A=B */
         }
     }
   else
     {
-      K=csqrt(R2 - Q3);
-      Ap = -cpow(R + K,1.0/3.0);
-      Am = -cpow(R - K,1.0/3.0);
-      if (cabs(Ap) > cabs(Am))
+      K=sqrt(R2 - Q3);
+      Ap = -pow(R + K,1.0/3.0);
+      Am = -pow(R - K,1.0/3.0);
+      if (abs(Ap) > abs(Am))
         A=Ap;
       else 
         A=Am;
@@ -488,9 +516,9 @@ template <class ntype, class cmplx> void quartic<ntype,cmplx>::oqs_solve_cubic_a
       asol[1] = -0.5*ApB + I*sqrt3*(AmB);
       asol[2] = -0.5*ApB - I*sqrt3*(AmB);
       sol=asol[0];
-      if (cabs(sol) < cabs(asol[1]))
+      if (abs(sol) < abs(asol[1]))
         sol=asol[1];
-      if (cabs(sol) < cabs(asol[2]))
+      if (abs(sol) < abs(asol[2]))
         sol=asol[2];
     }
 }
@@ -559,45 +587,45 @@ template <class ntype, class cmplx> void quartic<ntype,cmplx>::oqs_calc_phi0_cmp
   /* eq. (87) */ 
   if (a.imag()==0 && b.imag()==0)
     {
-      diskrr=(9*a*a-24*b).real();                    
+      diskrr=(9.0*a*a-24.0*b).real();                    
       if(diskrr > 0.0)
         { 
           diskrr=sqrt(diskrr);
           if(a.real() > 0.0)
-            s=-2*b.real()/(3*a+diskrr);                     
+            s=-2.0*b.real()/(3.0*a+diskrr);                     
           else
-            s=-2*b.real()/(3*a.real()-diskrr);                      
+            s=-2.0*b.real()/(3.0*a.real()-diskrr);                      
         }
       else
         {      
-          s=-a.real()/4;                                    
+          s=-a.real()/4.0;                                    
         }
     }
   else
     {
-      diskr=sqrt(9*a*a-24*b);                    
-      sp = -3*a+diskr;
-      sm = -3*a-diskr;
+      diskr=sqrt(9.0*a*a-24.0*b);                    
+      sp = -3.0*a+diskr;
+      sm = -3.0*a-diskr;
       if (abs(sp) > abs(sm))
         s = 2.0*b/sp;
       else
         s = 2.0*b/sm;
     }
   /* eqs. (83) */
-  aq=a+4*s;                                      
-  bq=b+3*s*(a+2*s);                              
-  cq=c+s*(2*b+s*(3*a+4*s));                      
+  aq=a+4.0*s;                                      
+  bq=b+3.0*s*(a+2.0*s);                              
+  cq=c+s*(2.0*b+s*(3.0*a+4.0*s));                      
   dq=d+s*(c+s*(b+s*(a+s)));                      
-  gg=bq*bq/9;
+  gg=bq*bq/9.0;
   hh=aq*cq;      
-  g=hh-4*dq-3*gg;                       /* eq. (85) */                             
-  h=(8*dq+hh-2*gg)*bq/3-cq*cq-dq*aq*aq; /* eq. (86) */         
-  oqs_solve_cubic_analytic_depressed_cmplx(g, h, &rmax);
+  g=hh-4.0*dq-3.0*gg;                       /* eq. (85) */                             
+  h=(8.0*dq+hh-2.0*gg)*bq/3.0-cq*cq-dq*aq*aq; /* eq. (86) */         
+  oqs_solve_cubic_analytic_depressed_cmplx(g, h, rmax);
   if (isnan(rmax.real()) || isinf(rmax.real())||
       isnan(rmax.real()) || isinf(rmax.real()))
 
     {
-      oqs_solve_cubic_analytic_depressed_handle_inf_cmplx(g, h, &rmax);
+      oqs_solve_cubic_analytic_depressed_handle_inf_cmplx(g, h, rmax);
       if ((isnan(rmax.real()) || isinf(rmax.real())||
            isnan(rmax.real()) || isinf(rmax.real())) && scaled)
         {
@@ -614,11 +642,11 @@ template <class ntype, class cmplx> void quartic<ntype,cmplx>::oqs_calc_phi0_cmp
           hhss=aqs*cqs;  
           g=hhss-4.0*dqss-3.0*ggss;                       
           h=(8.0*dqss+hhss-2.0*ggss)*bqs/3.0-cqs*(cqs/rfact)-(dq/rfact)*aqs*aqs; 
-          oqs_solve_cubic_analytic_depressed_cmplx(g, h, &rmax);
+          oqs_solve_cubic_analytic_depressed_cmplx(g, h, rmax);
           if (isnan(rmax.real()) || isinf(rmax.real())||
               isnan(rmax.imag()) || isinf(rmax.imag()))
             {
-              oqs_solve_cubic_analytic_depressed_handle_inf_cmplx(g, h, &rmax);
+              oqs_solve_cubic_analytic_depressed_handle_inf_cmplx(g, h, rmax);
             }
           rmax *= rfact;
         }
@@ -640,7 +668,7 @@ template <class ntype, class cmplx> void quartic<ntype,cmplx>::oqs_calc_phi0_cmp
       for (iter=0; iter < 8; iter++)
         {   
           df =  3.0*xsq + g;
-          if (df==0)
+          if (df==cmplx(0))
             {
               break;
             }
@@ -649,12 +677,12 @@ template <class ntype, class cmplx> void quartic<ntype,cmplx>::oqs_calc_phi0_cmp
           fold = f;
           xsq = x*x;
           f = x*(xsq + g) + h;
-          if (f==0)
+          if (f==cmplx(0))
             {
               break;
             } 
 
-          if (cabs(f) >= cabs(fold))
+          if (abs(f) >= abs(fold))
             {
               x = xold;
               break;
@@ -837,6 +865,95 @@ template <class ntype, class cmplx> ntype  quartic<ntype,cmplx>::oqs_calc_err_ab
     sum +=abs(((aq + cq) - a)/a);
   return sum;
 }
+template <class ntype, class cmplx> void quartic<ntype,cmplx>::oqs_NRabcd(ntype a, ntype b, ntype c, ntype d, ntype& AQ, ntype& BQ, ntype& CQ, ntype& DQ)
+{
+  /* Newton-Raphson described in sec. 2.3 of the manuscript for complex
+   * coefficients a,b,c,d */
+  int iter, k1, k2;
+  ntype x02, errf, errfold, xold[4], x[4], dx[4], det, Jinv[4][4], fvec[4], vr[4];
+  x[0] = AQ;
+  x[1] = BQ;
+  x[2] = CQ;
+  x[3] = DQ;
+  vr[0] = d;
+  vr[1] = c;
+  vr[2] = b;
+  vr[3] = a;
+  fvec[0] = x[1]*x[3] - d;
+  fvec[1] = x[1]*x[2] + x[0]*x[3] - c;
+  fvec[2] = x[1] + x[0]*x[2] + x[3] - b;
+  fvec[3] = x[0] + x[2] - a; 
+  errf=0;
+  for (k1=0; k1 < 4; k1++)
+    {
+      if (vr[k1]==0)
+        errf += abs(fvec[k1]);
+      else
+        errf +=abs(fvec[k1]/vr[k1]);
+    }
+  for (iter = 0; iter < 8; iter++)
+    {
+      x02 = x[0]-x[2];
+      det = x[1]*x[1] + x[1]*(-x[2]*x02 - 2.0*x[3]) + x[3]*(x[0]*x02 + x[3]);
+      if (det==0.0)
+	break;
+      Jinv[0][0] = x02;
+      Jinv[0][1] = x[3] - x[1];
+      Jinv[0][2] = x[1]*x[2] - x[0]*x[3];
+      Jinv[0][3] = -x[1]*Jinv[0][1] - x[0]*Jinv[0][2]; 
+      Jinv[1][0] = x[0]*Jinv[0][0] + Jinv[0][1];
+      Jinv[1][1] = -x[1]*Jinv[0][0];
+      Jinv[1][2] = -x[1]*Jinv[0][1];   
+      Jinv[1][3] = -x[1]*Jinv[0][2];
+      Jinv[2][0] = -Jinv[0][0];
+      Jinv[2][1] = -Jinv[0][1];
+      Jinv[2][2] = -Jinv[0][2];
+      Jinv[2][3] = Jinv[0][2]*x[2] + Jinv[0][1]*x[3];
+      Jinv[3][0] = -x[2]*Jinv[0][0] - Jinv[0][1];
+      Jinv[3][1] = Jinv[0][0]*x[3];
+      Jinv[3][2] = x[3]*Jinv[0][1];
+      Jinv[3][3] = x[3]*Jinv[0][2];
+      for (k1=0; k1 < 4; k1++)
+	{
+	  dx[k1] = 0;
+	  for (k2=0; k2 < 4; k2++)
+	    dx[k1] += Jinv[k1][k2]*fvec[k2];
+	}
+      for (k1=0; k1 < 4; k1++)
+      	xold[k1] = x[k1];
+
+      for (k1=0; k1 < 4; k1++)
+	{
+	  x[k1] += -dx[k1]/det;
+	}
+      fvec[0] = x[1]*x[3] - d;
+      fvec[1] = x[1]*x[2] + x[0]*x[3] - c;
+      fvec[2] = x[1] + x[0]*x[2] + x[3] - b;
+      fvec[3] = x[0] + x[2] - a; 
+      errfold = errf;
+      errf=0;
+      for (k1=0; k1 < 4; k1++)
+	{
+        if (vr[k1]==0)
+	  errf += abs(fvec[k1]);
+        else
+	  errf += abs(fvec[k1]/vr[k1]);
+	}
+      if (errf==0)
+	break;
+      if (errf >= errfold)
+	{
+	  for (k1=0; k1 < 4; k1++)
+	    x[k1] = xold[k1];
+	  break;
+	}
+    }
+  AQ=x[0];
+  BQ=x[1];
+  CQ=x[2];
+  DQ=x[3];
+}
+
 template <class ntype, class cmplx> void quartic<ntype,cmplx>::NRabcdCCmplx(cmplx a, cmplx b, cmplx c, cmplx d, 
                   cmplx& AQ, cmplx& BQ, cmplx& CQ, cmplx& DQ)
 {
@@ -860,7 +977,7 @@ template <class ntype, class cmplx> void quartic<ntype,cmplx>::NRabcdCCmplx(cmpl
   errf=0;
   for (k1=0; k1 < 4; k1++)
     {
-      errf += (vr[k1]==0)?abs(fvec[k1]):abs(fvec[k1]/vr[k1]);
+      errf += (vr[k1]==cmplx(0))?abs(fvec[k1]):abs(fvec[k1]/vr[k1]);
     }
 
   if (errf==0)
@@ -911,7 +1028,7 @@ template <class ntype, class cmplx> void quartic<ntype,cmplx>::NRabcdCCmplx(cmpl
       errf=0;
       for (k1=0; k1 < 4; k1++)
         {
-          errf += (vr[k1]==0)?abs(fvec[k1]):abs(fvec[k1]/vr[k1]);
+          errf += (vr[k1]==cmplx(0))?abs(fvec[k1]):abs(fvec[k1]/vr[k1]);
         }
       if (errf==0)
         break;
@@ -1278,7 +1395,7 @@ template <class ntype, class cmplx> void quartic<ntype,cmplx>::oqs_quartic_solve
   b=coeff[2]/coeff[4];
   c=coeff[1]/coeff[4];
   d=coeff[0]/coeff[4];
-  oqs_calc_phi0_cmplx(a,b,c,d,&phi0,0);
+  oqs_calc_phi0_cmplx(a,b,c,d,phi0,0);
   // simple polynomial rescaling
   if (isnan(phi0.real())||isinf(phi0.real())||
       isnan(phi0.imag())||isinf(phi0.imag()))
@@ -1289,14 +1406,14 @@ template <class ntype, class cmplx> void quartic<ntype,cmplx>::oqs_quartic_solve
       b /= rfactsq;
       c /= rfactsq*rfact;
       d /= rfactsq*rfactsq;
-      oqs_calc_phi0_cmplx(a,b,c,d,&phi0, 1);
+      oqs_calc_phi0_cmplx(a,b,c,d,phi0, 1);
     }
 
-  l1=a/2;        /* eq. (16) */                                        
-  l3=b/6+phi0/2; /* eq. (18) */                                
+  l1=a/cmplx(2);        /* eq. (16) */                                        
+  l3=b/cmplx(6)+phi0/cmplx(2); /* eq. (18) */                                
   del2=c-a*l3;   /* defined just after eq. (27) */                               
   nsol=0;
-  bl311 =2.*b/3.-phi0-l1*l1; /* This is d2 as defined in eq. (20)*/ 
+  bl311 =cmplx(2)*b/cmplx(3)-phi0-l1*l1; /* This is d2 as defined in eq. (20)*/ 
   dml3l3 = d-l3*l3;          /* This is d3 as defined in eq. (15) with d2=0 */
   /* Three possible solutions for d2 and l2 (see eqs. (28)) and discussion which follows) */
   if (bl311!=0.0)
@@ -1306,18 +1423,18 @@ template <class ntype, class cmplx> void quartic<ntype,cmplx>::oqs_quartic_solve
       res[nsol] = oqs_calc_err_ldlt_cmplx(b,c,d,d2m[nsol], l1, l2m[nsol], l3);
       nsol++;
     }
-  if (del2!=0)
+  if (del2!=cmplx(0))
     {
-      l2m[nsol]=2*dml3l3/del2;
-      if (l2m[nsol]!=0)
+      l2m[nsol]=cmplx(2)*dml3l3/del2;
+      if (l2m[nsol]!=cmplx(0))
         {
-          d2m[nsol]=del2/(2*l2m[nsol]);
+          d2m[nsol]=del2/(cmplx(2)*l2m[nsol]);
           res[nsol] = oqs_calc_err_ldlt_cmplx(b,c,d,d2m[nsol], l1, l2m[nsol], l3);
           nsol++;
         }
 
       d2m[nsol] = bl311;
-      l2m[nsol] = 2.0*dml3l3/del2;
+      l2m[nsol] = cmplx(2.0)*dml3l3/del2;
       res[nsol] = oqs_calc_err_ldlt_cmplx(b,c,d,d2m[nsol], l1, l2m[nsol], l3);
       nsol++;
     }
@@ -1340,7 +1457,7 @@ template <class ntype, class cmplx> void quartic<ntype,cmplx>::oqs_quartic_solve
       l2 = l2m[kmin];
     }
   /* Case I eqs. (37)-(40) */
-  gamma=csqrt(-d2);                               
+  gamma=sqrt(-d2);                               
   acx=l1+gamma;                                  
   bcx=l3+gamma*l2;                              
   ccx=l1-gamma;                                
@@ -1352,13 +1469,13 @@ template <class ntype, class cmplx> void quartic<ntype,cmplx>::oqs_quartic_solve
   if (abs(acx) < abs(ccx))
     {
       nsol=0;
-      if (dcx !=0)
+      if (dcx != cmplx(0))
         {
           acxv[nsol] = (c - bcx*ccx)/dcx;   /* see eqs. (47) */
           errv[nsol]=oqs_calc_err_abc_cmplx(a, b, c, acxv[nsol], bcx, ccx, dcx);
           nsol++;
         }
-      if (ccx != 0) 
+      if (ccx != cmplx(0)) 
         {
           acxv[nsol] = (b - dcx - bcx)/ccx;  /* see eqs. (47) */
           errv[nsol] = oqs_calc_err_abc_cmplx(a, b, c, acxv[nsol], bcx, ccx, dcx);
@@ -1381,13 +1498,13 @@ template <class ntype, class cmplx> void quartic<ntype,cmplx>::oqs_quartic_solve
   else 
     {
       nsol = 0;
-      if (bcx != 0)
+      if (bcx != cmplx(0))
         { 
           ccxv[nsol] = (c - acx*dcx)/bcx;      /* see eqs. (53) */
           errv[nsol] = oqs_calc_err_abc_cmplx(a, b, c, acx, bcx, ccxv[nsol], dcx);
           nsol++;
         }
-      if (acx != 0)
+      if (acx != cmplx(0))
         {
           ccxv[nsol] = (b - bcx - dcx)/acx;    /* see eqs. (53) */
           errv[nsol] = oqs_calc_err_abc_cmplx(a, b, c, acx, bcx, ccxv[nsol], dcx);
@@ -1422,7 +1539,7 @@ template <class ntype, class cmplx> void quartic<ntype,cmplx>::oqs_quartic_solve
       else if(abs(dcx1) > abs(bcx1))
         bcx1=d/dcx1;                                       
       err1 = oqs_calc_err_abcd_ccmplx(a, b, c, d, acx1, bcx1, ccx1, dcx1);
-      if (d2==0 || err1 < err0)
+      if (d2==cmplx(0) || err1 < err0)
         {
           acx = acx1;
           bcx = bcx1;
@@ -1437,7 +1554,7 @@ template <class ntype, class cmplx> void quartic<ntype,cmplx>::oqs_quartic_solve
       bq=bcx.real();
       cq=ccx.real();
       dq=dcx.real();
-      oqs_NRabcd_cmplx(a.real(),b.real(),c.real(),d.real(),&aq,&bq,&cq,&dq);      
+      oqs_NRabcd(a.real(),b.real(),c.real(),d.real(),aq,bq,cq,dq);      
       solve_quadratic(aq,bq,qroots);
       roots[0]=qroots[0];
       roots[1]=qroots[1];        
@@ -1448,7 +1565,7 @@ template <class ntype, class cmplx> void quartic<ntype,cmplx>::oqs_quartic_solve
   else
     {
       /* first refine the coefficient through a Newton-Raphson */
-      NRabcdCCmplx(a,b,c,d,&acx,&bcx,&ccx,&dcx);
+      NRabcdCCmplx(a,b,c,d,acx,bcx,ccx,dcx);
       /* finally calculate the roots as roots of p1(x) and p2(x) (see end of sec. 2.1) */
       cdiskr=sqrt(acx*acx-4.0*bcx);
       zx1 = -0.5*(acx+cdiskr);
@@ -1457,7 +1574,7 @@ template <class ntype, class cmplx> void quartic<ntype,cmplx>::oqs_quartic_solve
         zxmax = zx1;
       else
         zxmax = zx2;
-      if (zxmax==0)
+      if (zxmax==cmplx(0))
         zxmin=0;
       else
         zxmin = bcx/zxmax;
@@ -1470,7 +1587,7 @@ template <class ntype, class cmplx> void quartic<ntype,cmplx>::oqs_quartic_solve
         zxmax = zx1;
       else
         zxmax = zx2;
-      if (zxmax==0)
+      if (zxmax==cmplx(0))
         zxmin=0;
       else
         zxmin = dcx/zxmax;
