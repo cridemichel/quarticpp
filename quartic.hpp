@@ -239,7 +239,8 @@ public:
       eps05 = pow(numeric_limits<ntype>::epsilon(),0.5);
       maxf= getmax();
       //cout << setprecision(50) << "maxf=" << maxf << "\n";
-      maxdigits = numeric_limits<ntype>::digits10-1;
+      maxdigits = (numeric_limits<ntype>::digits10)-1;
+      //cout << "numeric digits=" << maxdigits << "\n";
       maxf2 = pow(maxf,0.5)/10.0;
       maxf3 = pow(maxf,1.0/3.0)/10.0;
       scalfact = pow(maxf,1.0/4.0)/1.618034;
