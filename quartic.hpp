@@ -169,6 +169,7 @@ public:
         {
           bn = cmon[i] + bn*x;
         }
+      
       return bn;
     }
    cmplx evaldpoly(cmplx x)
@@ -244,8 +245,10 @@ public:
    void init_const(void)
     {
       meps = epsilon();
+      //cout << setprecision(50) << "meps=" << meps << "\n";
       eps05 = pow(numeric_limits<ntype>::epsilon(),0.5);
       maxf= getmax();
+      //cout << setprecision(50) << "maxf=" << maxf << "\n";
       maxdigits = numeric_limits<ntype>::digits10-1;
       maxf2 = pow(maxf,0.5)/10.0;
       maxf3 = pow(maxf,1.0/3.0)/10.0;
@@ -259,11 +262,17 @@ public:
     {
       is_cmplx = 0;
       coeff = v;
+      cmon[n] = 1.0;
+      for (int i=n-1; i >=0; i--)
+        cmon[i] = coeff[i]/coeff[n];
     }
   void set_coeff(pvector<cmplx,5> v)
     {
       is_cmplx = 1;
       coeff = v;
+      cmon[n] = 1.0;
+      for (int i=n-1; i >=0; i--)
+        cmon[i] = coeff[i]/coeff[n];
     }
 
   quartic() 
@@ -465,7 +474,7 @@ template <class ntype, class cmplx> void quartic<ntype,cmplx>::oqs_solve_cubic_a
   const ntype sqrt3=sqrt(3.0)/2.0;
   Q = -b/3.0;
   R = 0.5*c;
-  if (abs(Q) > 1E102 || abs(R) > 1E154)
+  if (abs(Q) > maxf3 || abs(R) > maxf2)
     {
       oqs_solve_cubic_analytic_depressed_handle_inf_cmplx(b, c, sol);
       return;

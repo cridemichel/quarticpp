@@ -4,3 +4,8 @@ Session.vim
 quartic
 quartic_mp
 compile_commands.json
+GPATH
+GRTAGS
+GTAGS
+tags
+
