@@ -10,18 +10,8 @@
 #include <cstdlib>
 #include <vector>
 #include <array>
-#ifdef OQS_MULTIPLE_PRECISION
-#include <boost/multiprecision/mpc.hpp>
-#include <boost/multiprecision/mpfr.hpp>
-using namespace boost;
-using namespace boost::multiprecision;
-using namespace boost::multiprecision::backends;
-using mpdbl=number<mpfr_float_backend<50>>;
-using mpcmplx=number<mpc_complex_backend<50>>;
-#endif
 #define Sqr(x) ((x)*(x))
 using namespace std;
-
 template <class ntype, class cmplx=complex<ntype>> 
 class quartic: public numeric_limits<ntype> {
   static const int n=4, N=4;
