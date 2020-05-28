@@ -165,10 +165,10 @@ int main(int argc, char** argv)
           print_roots("CASE 17", x1c, x2c, x3c, x4c);
           break;
         case 18:
-          x1c=mpcmplx("4E5+I*3E2");
-          x2c=mpcmplx("4E5-I*3E2");
-          x3c=mpcmplx("3E4+I*7E3");
-          x4c=mpcmplx("3E4-I*7E3");
+          x1c=mpcmplx("4E5","3E2");
+          x2c=mpcmplx("4E5","-3E2");
+          x3c=mpcmplx("3E4","7E3");
+          x4c=mpcmplx("3E4","-7E3");
           print_roots("CASE 18", x1c, x2c, x3c, x4c);
           break;
         case 1:
@@ -209,8 +209,8 @@ int main(int argc, char** argv)
         case 6:
           x1c = mpcmplx("1E7");
           x2c = mpcmplx("-1E6");
-          x3c = mpcmplx("1+I");
-          x4c = mpcmplx("1-I");
+          x3c = mpcmplx("1","1");
+          x4c = mpcmplx("1","-1");
           print_roots("CASE 6", x1c, x2c, x3c, x4c);
           break;
         case 7:
