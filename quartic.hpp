@@ -17,6 +17,7 @@ class quartic: public numeric_limits<ntype> {
   static const int n=4, N=4;
   pvector<ntype,5> coeff;
   pvector<ntype,5> cmon;
+  const ntype pigr=acos(ntype(-1.0));
   ntype eps05, meps, maxf, maxf2, maxf3, scalfact, cubic_rescal_fact;
   int maxdigits;
   ntype goaleps;
@@ -277,7 +278,7 @@ template <class ntype, class cmplx> void quartic<ntype,cmplx>::oqs_solve_cubic_a
  /* find analytically the dominant root of a depressed cubic x^3+b*x+c 
   * where coefficients b and c are large (see sec. 2.2 in the manuscript) */ 
   ntype Q, R, theta, A, B, QR, QRSQ, KK, sqrtQ, RQ;;
-  const ntype PI2=M_PI/2.0, TWOPI=2.0*M_PI;
+  const ntype PI2=pigr/2.0, TWOPI=2.0*pigr;
 #ifdef FAST_MATH
   ntype rq3;
 #endif
@@ -319,7 +320,7 @@ template <class ntype, class cmplx> void quartic<ntype,cmplx>::oqs_solve_cubic_a
       if (rq3 > 1.0)
         theta = 1.0;
       else if (rq3 < -1.0)
-        theta  = M_PI;
+        theta  = pigr;
       else
         theta = acos(rq3);
 #else
@@ -351,7 +352,7 @@ template <class ntype, class cmplx> void quartic<ntype,cmplx>::oqs_solve_cubic_a
   /* find analytically the dominant root of a depressed cubic x^3+b*x+c 
    * where coefficients b and c are large (see sec. 2.2 in the manuscript) */ 
   cmplx asol[3], Am, Ap, ApB, AmB, Q, R, A, B, QR, QRSQ, KK, RQ;
-  const ntype PI2=M_PI/2.0, TWOPI=2.0*M_PI;
+  const ntype PI2=pigr/2.0, TWOPI=2.0*pigr;
   ntype theta, sqrtQr, Ar, Br, QRr, QRSQr, KKr, RQr;
   const ntype sqrt3=sqrt(3.0)/2.0;
   int arereal=0;
@@ -488,10 +489,10 @@ template <class ntype, class cmplx> void quartic<ntype,cmplx>::oqs_solve_cubic_a
         {
           theta = acos(R.real()/sqrt(Q3r));
           sqrtQr=-2.0*sqrt(Q.real());
-          if (theta < M_PI/2) 
+          if (theta < pigr/2) 
             sol = sqrtQr*cos(theta/3.0);
           else 
-            sol = sqrtQr*cos((theta+2.0*M_PI)/3.0);
+            sol = sqrtQr*cos((theta+2.0*pigr)/3.0);
         }
       else
         {
@@ -557,17 +558,17 @@ template <class ntype, class cmplx> void quartic<ntype,cmplx>::oqs_solve_cubic_a
       if (rq3 > 1.0)
         theta = 1.0;
       else if (rq3 < -1.0)
-        theta  = M_PI;
+        theta  = pigr;
       else
         theta = acos(rq3);
 #else
       theta = acos(R/sqrt(Q3));
 #endif
       sqrtQ=-2.0*sqrt(Q);
-      if (theta < M_PI/2) 
+      if (theta < pigr/2) 
 	sol = sqrtQ*cos(theta/3.0);
       else 
-	sol = sqrtQ*cos((theta+2.0*M_PI)/3.0);
+	sol = sqrtQ*cos((theta+2.0*pigr)/3.0);
     }
   else
     {
@@ -706,30 +707,30 @@ template <class ntype, class cmplx> void  quartic<ntype, cmplx>::oqs_calc_phi0(n
   ntype ggss, hhss, dqss, aqs, bqs, cqs, rfact, rfactsq; 
   int iter;
 
-  diskr=9*a*a-24*b;                    
+  diskr=9.0*a*a-24.0*b;                    
   /* eq. (67) */
   if(diskr > 0.0)
     { 
       diskr=sqrt(diskr);
       if(a > 0.0)
-	s=-2*b/(3*a+diskr);                     
+	s=-2.0*b/(3.0*a+diskr);                     
       else
-	s=-2*b/(3*a-diskr);                      
+	s=-2.0*b/(3.0*a-diskr);                      
     }
   else
     {      
-      s=-a/4;                                    
+      s=-a/4.0;                                    
     }
   /* eqs. (63) */
-  aq=a+4*s;                                      
-  bq=b+3*s*(a+2*s);                              
-  cq=c+s*(2*b+s*(3*a+4*s));                      
+  aq=a+4.0*s;                                      
+  bq=b+3.0*s*(a+2.0*s);                              
+  cq=c+s*(2.0*b+s*(3.0*a+4.0*s));                      
   dq=d+s*(c+s*(b+s*(a+s)));                      
-  gg=bq*bq/9;
+  gg=bq*bq/9.0;
   hh=aq*cq;     
   
-  g=hh-4*dq-3*gg;                       /* eq. (60) */  
-  h=(8*dq+hh-2*gg)*bq/3-cq*cq-dq*aq*aq; /* eq. (61) */          
+  g=hh-4.0*dq-3.0*gg;                       /* eq. (60) */  
+  h=(8.0*dq+hh-2.0*gg)*bq/3.0-cq*cq-dq*aq*aq; /* eq. (61) */          
   oqs_solve_cubic_analytic_depressed(g, h, rmax);
   if (isnan(rmax) || isinf(rmax))
     {
@@ -748,7 +749,7 @@ template <class ntype, class cmplx> void  quartic<ntype, cmplx>::oqs_calc_phi0(n
 	  ggss=bqs*bqs/9.0;
 	  hhss=aqs*cqs;   
 	  g=hhss-4.0*dqss-3.0*ggss;                       
-	  h=(8.0*dqss+hhss-2.0*ggss)*bqs/3-cqs*(cqs/rfact)-(dq/rfact)*aqs*aqs; 
+	  h=(8.0*dqss+hhss-2.0*ggss)*bqs/3.0-cqs*(cqs/rfact)-(dq/rfact)*aqs*aqs; 
 	  oqs_solve_cubic_analytic_depressed(g, h, rmax);
 	  if (isnan(rmax) || isinf(rmax))
 	    {
@@ -1054,7 +1055,7 @@ template <class ntype, class cmplx> void quartic<ntype,cmplx>::NRabcdCCmplx(cmpl
 template <class ntype, class cmplx> void  quartic<ntype,cmplx>::oqs_solve_quadratic(ntype a, ntype b, cmplx roots[2])
 { 
   ntype div,sqrtd,diskr,zmax,zmin;
-  diskr=a*a-4*b;   
+  diskr=a*a-4.0*b;   
   if(diskr>=0.0)
     {
       if(a>=0.0)
@@ -1062,7 +1063,7 @@ template <class ntype, class cmplx> void  quartic<ntype,cmplx>::oqs_solve_quadra
       else
 	div=-a+sqrt(diskr);
 
-      zmax=div/2;
+      zmax=div/2.0;
 
       if(zmax==0.0)
 	zmin=0.0;
@@ -1074,8 +1075,8 @@ template <class ntype, class cmplx> void  quartic<ntype,cmplx>::oqs_solve_quadra
   else
     {   
       sqrtd = sqrt(-diskr);
-      roots[0]=cmplx(-a/2,sqrtd/2);
-      roots[1]=cmplx(-a/2,-sqrtd/2);      
+      roots[0]=cmplx(-a/2.0,sqrtd/2.0);
+      roots[1]=cmplx(-a/2.0,-sqrtd/2.0);      
     }   
 }
 
@@ -1121,14 +1122,20 @@ template <class ntype, class cmplx> void quartic<ntype,cmplx>::oqs_quartic_solve
       d /= rfactsq*rfactsq;
       oqs_calc_phi0(a,b,c,d,phi0,1);
     }
-
-  l1=a/2;          /* eq. (4) */                                        
-  l3=b/6+phi0/2;   /* eq. (6) */                                
+  //cout << setprecision(50) << "phi0=" << phi0 << "\n";
+  l1=a/ntype(2.0);          /* eq. (4) */                                        
+  l3=b/ntype(6.0)+phi0/ntype(2.0);   /* eq. (6) */                                
   del2=c-a*l3;     /* defined just after eq. (20) */                             
   nsol=0;
-  bl311 =2.*b/3.-phi0-l1*l1;   /* This is d2 as defined in eq. (18)*/ 
+  bl311 =ntype(2.)*b/ntype(3.)-phi0-l1*l1;   /* This is d2 as defined in eq. (18)*/ 
   dml3l3 = d-l3*l3;            /* dml3l3 is d3 as defined in eq. (9) with d2=0 */ 
   
+  /*
+   * cout << setprecision(50) << "a=" << a << " b=" << b << " c=" << c << "d=" << d
+   *   << "\n";
+   * cout << setprecision(50) << "l1=" << l1 << " l3=" << l3 << " del2=" << del2 << 
+   *   "bl311=" << bl311 << " dml3l3=" << dml3l3 << "\n";
+   */
   /* Three possible solutions for d2 and l2 (see eqs. (18)-(20) and discussion which follows) */
   if (bl311!=0.0)
     {
@@ -1184,7 +1191,8 @@ template <class ntype, class cmplx> void quartic<ntype,cmplx>::oqs_quartic_solve
       if(abs(dq) < abs(bq))
 	dq=d/bq;                                
       else if(abs(dq) > abs(bq))
-	bq=d/dq;                               
+	bq=d/dq;         
+
       if (abs(aq) < abs(cq))
 	{
 	  nsol=0;
