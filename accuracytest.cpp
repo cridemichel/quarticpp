@@ -295,7 +295,7 @@ int main(int argc, char** argv)
           c[4] = mpreal("1.0");
           c[3] = mpreal("1.0");
           c[2] = mpreal("1.0");
-          c[1] = mpreal("3.0/8.0");
+          c[1] = mpreal("3.0")/mpreal("8.0");
           c[0] = mpreal("0.001");
           printf("CASE 23\n");
           break;
