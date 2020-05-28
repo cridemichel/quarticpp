@@ -10,7 +10,7 @@ CXXFLAGS= -Wall -std=c++17 -O3 -I /usr/local/include/ $(LDFLAGS)
 CFLAGS= -Wall -O3 
 HEADERS=./quartic.hpp ./pvector.hpp 
 LDFLAGS=-lm -llapack -lblas $(BOOST_LIB) 
-all: quartic quartic_mp
+all: quartic quartic_mp accuracytest
 
 quartic: quartic.cpp $(HEADERS)
 	$(CXX) $(CXXFLAGS) -o quartic quartic.cpp  
@@ -18,5 +18,7 @@ quartic: quartic.cpp $(HEADERS)
 quartic_mp: quartic_mp.cpp $(HEADERS) 
 	$(CXX) $(CXXFLAGS) -I /usr/local/include/ $(LDFLAGS) -o quartic_mp quartic_mp.cpp  
 
+accuracytest: accuracytest.cpp $(HEADERS)
+	$(CXX) $(CXXFLAGS) -I /usr/local/include/ $(LDFLAGS) -o accuracytest accuracytest.cpp  
 clean:
 	rm -f quartic quartic_mp *.o

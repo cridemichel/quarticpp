@@ -9,23 +9,55 @@ using mpreal=number<mpfr_float_backend<WP>>;
 using mpcmplx=number<mpc_complex_backend<WP>>;
 #include"./quartic.hpp"
 
-double print_accuracy_at(char *str, double complex *csol, complex double exsol[4])
+int perm[24][4]={
+      {0, 1, 2, 3}, {0, 1, 3, 2}, {0, 2, 1, 3}, {0, 2, 3, 1}, {0, 3, 1, 2}, {0, 3, 2, 1}, 
+      {1, 0, 2, 3}, {1, 0, 3, 2}, {1, 2, 0, 3}, {1, 2, 3, 0}, {1, 3, 0, 2}, {1, 3, 2, 0}, 
+      {2, 0, 1, 3}, {2, 0, 3, 1}, {2, 1, 0, 3}, {2, 1, 3, 0}, {2, 3, 0, 1}, {2, 3, 1, 0},
+      {3, 0, 1, 2}, {3, 0, 2, 1}, {3, 1, 0, 2}, {3, 1, 2, 0}, {3, 2, 0, 1}, {3, 2, 1, 0}};
+
+
+void sort_sol_opt(pvector<complex<double>,4>& sol, pvector<complex<double>,4>& exsol)
+{
+  int k1, k2, k1min;
+  double v, vmin;
+  pvector<complex<double>,4> solt;
+  for (k1=0; k1 < 24; k1++)
+    {
+      v = 0;
+      for (k2=0; k2 < 4; k2++)
+	{
+	  v += (exsol[k2]==0.0)?abs(sol[perm[k1][k2]]-exsol[k2]):abs((sol[perm[k1][k2]]-exsol[k2])/exsol[k2]);
+	}
+      if (k1==0 || v < vmin)
+	{
+	  k1min=k1;
+	  vmin = v;
+	}
+    } 
+  for (k2=0; k2 < 4; k2++)
+    solt[k2] = sol[k2];
+
+  for (k2=0; k2 < 4; k2++)
+    sol[k2] = solt[perm[k1min][k2]];
+}
+
+double print_accuracy_at(pvector<complex<double>,4> csol, pvector<complex<double>,4> exsol)
 {
   /* we follow FLocke here */
   int k1;
   double relerr, relerrmax;
   for (k1=0; k1 < 4; k1++)
     {
-      relerr=cabs((csol[k1] - exsol[k1])/exsol[k1]); 
+      relerr=abs((csol[k1] - exsol[k1])/exsol[k1]); 
       if (k1==0 || relerr > relerrmax)
         {
-          relerrmax=cabs((csol[k1] - exsol[k1])/exsol[k1]); 
+          relerrmax=abs((csol[k1] - exsol[k1])/exsol[k1]); 
         }
     }
-  printf("[%s] relative accuracy=%.16G\n", str, relerrmax);
+  cout << "relative accuracy="<< relerrmax << "\n";
   return relerrmax;
 }
-void print_roots(char *str, mpcmplx x1c, mpcmplx x2c,
+void print_roots(const char *str, mpcmplx x1c, mpcmplx x2c,
                  mpcmplx x3c, mpcmplx x4c)
 {
   cout << str;
@@ -35,16 +67,17 @@ void print_roots(char *str, mpcmplx x1c, mpcmplx x2c,
   cout << "exact root #4=" << x4c.real() << "+I*(" << x4c.imag() <<  ")\n";
 }
 
-int main(void)
+int main(int argc, char** argv)
 {
   quartic<double> Q;
   pvector<double,5> cpv;
   pvector<complex<double>,4> r;
   mpcmplx x1c, x2c, x3c, x4c; 
-  cmplex<double> csol[4];
-  complex<double> csolREF[4];
   mpreal c[5], S;
-  int num, k1, okHQR, caso;
+  pvector<complex<double>,4> csol;
+  pvector<complex<double>,4> csolREF;
+  static const mpcmplx  I = mpcmplx(0,1);
+  int k1, caso;
   if (argc == 2)
     {
       caso = atoi(argv[1]);
@@ -235,37 +268,35 @@ int main(void)
     }
   if (caso <=22)
     {
-      csolREF[0]=x1c;
-      csolREF[1]=x2c;
-      csolREF[2]=x3c;
-      csolREF[3]=x4c;
+      csolREF[0]=complex<double>(x1c);
+      csolREF[1]=complex<double>(x2c);
+      csolREF[2]=complex<double>(x3c);
+      csolREF[3]=complex<double>(x4c);
       c[4] = 1.0;
       c[3] = mpcmplx(-(x1c+x2c+x3c+x4c)).real();
       c[2] = mpcmplx(x1c*x2c + (x1c+x2c)*(x3c+x4c) + x3c*x4c).real(); 
       c[1] = mpcmplx(-x1c*x2c*(x3c+x4c) - x3c*x4c*(x1c+x2c)).real();
-      c[0] = mccmplx(x1c*x2c*x3c*x4c).real();
+      c[0] = mpcmplx(x1c*x2c*x3c*x4c).real();
     }
   else
     csolREF[0]=csolREF[1]=csolREF[2]=csolREF[3]=0.0;
   cout << "(" << c[4] << ")*x^4+(" << c[3] << ")*x^3+(" << c[2] << ")*x^2+(" << c[1] << ")*x+(" << c[0]<< ")==0\n";
 
-  cpv << c[0], c[1], c[2], c[3], c[3];
+  cpv << double(c[0]), double(c[1]), double(c[2]), double(c[3]), double(c[4]);
 
   Q.set_coeff(cpv);
   Q.find_roots(r);
-
+  csol = r; 
   sort_sol_opt(csol, csolREF);
   for (k1=0; k1 < 4; k1++)
     {
       if (caso <= 22)
-        printf("[ODM] root #%d=  %.15G+I*(%.15G) [%.15G + I*(%.15G)]\n", 
-               k1, creal(csol[k1]), cimag(csol[k1]), creal(csolREF[k1]), cimag(csolREF[k1]));
+        cout << setprecision(15) << "root #"<< k1 <<  "=  " << csol[k1].real() << "+I*(" << csol[k1].imag() << ") [" << csolREF[k1].real() <<  " + I*(" << csolREF[k1] << "]\n"; 
       else
-        printf("[ODM] root #%d=  %.15G+I*(%.15G)\n", 
-               k1, creal(csol[k1]), cimag(csol[k1]));
+        cout << setprecision(15) << "root #"<< k1 <<  "=  " << csol[k1].real() << "+I*(" << csol[k1].imag() << ")\n";
     }
   if (caso <=22)
-    print_accuracy_at("ODM", csol, csolREF);
+    print_accuracy_at(csol, csolREF);
 
   exit(-1);
 } 
