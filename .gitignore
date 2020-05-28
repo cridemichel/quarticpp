@@ -8,4 +8,5 @@ GPATH
 GRTAGS
 GTAGS
 tags
-
+*/**.dSYM
+.clangd

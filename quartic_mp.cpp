@@ -13,6 +13,8 @@ int main(void)
   quartic<mpreal,mpcmplx> Q;
   pvector<mpreal,5> c;
   pvector<mpcmplx,4> r;
+  // This is the Case 2 among accuracy tests in ACM Trans. Math. Softw. 46, 2, Article 20 (May 2020),
+  // https://doi.org/10.1145/3386241
   c << mpreal("16.048044012"),mpreal("-32.072044006"),mpreal("24.036011"),mpreal("-8.006000000000000"),mpreal("1.0"); 
 
   Q.set_coeff(c);
