@@ -142,167 +142,167 @@ int main(int argc, char** argv)
         {
           /* Strobach */
         case 14:
-          x1c = x2c = x3c = x4c = 1000;
+          x1c = x2c = x3c = x4c = mpcmplx("1000");
           print_roots("CASE 14", x1c, x2c, x3c, x4c);
           break;
         case 15:
-          x1c = x2c = x3c = 1000;
-          x4c = 1E-15;
+          x1c = x2c = x3c = mpcmplx("1000");
+          x4c = mpcmplx("1E-15");
           print_roots("CASE 15", x1c, x2c, x3c, x4c);
           break;
         case 16:
-          x3c = 1E16 + I*1E7;
-          x4c = 1E16 - I*1E7;
-          x1c = 1 + 0.1*I;
-          x2c = 1 - 0.1*I;
+          x3c = mpcmplx("1E16", "1E7");
+          x4c = mpcmplx("1E16", "-1E7");
+          x1c = mpcmplx("1", "0.1");
+          x2c = mpcmplx("1", "-0.1");
           print_roots("CASE 16", x1c, x2c, x3c, x4c);
           break;
         case 17:
-          x1c=10000;
-          x2c=10001;
-          x3c=10010;
-          x4c=10100;
+          x1c=mpcmplx("10000");
+          x2c=mpcmplx("10001");
+          x3c=mpcmplx("10010");
+          x4c=mpcmplx("10100");
           print_roots("CASE 17", x1c, x2c, x3c, x4c);
           break;
         case 18:
-          x1c=4E5+I*3E2;
-          x2c=4E5-I*3E2;
-          x3c=3E4+I*7E3;
-          x4c=3E4-I*7E3;
+          x1c=mpcmplx("4E5+I*3E2");
+          x2c=mpcmplx("4E5-I*3E2");
+          x3c=mpcmplx("3E4+I*7E3");
+          x4c=mpcmplx("3E4-I*7E3");
           print_roots("CASE 18", x1c, x2c, x3c, x4c);
           break;
         case 1:
-          x1c = 1E9;
-          x2c = 1E6;
-          x3c = 1E3;
-          x4c = 1;
+          x1c = mpcmplx("1E9");
+          x2c = mpcmplx("1E6");
+          x3c = mpcmplx("1E3");
+          x4c = mpcmplx("1");
           print_roots("CASE 1", x1c, x2c, x3c, x4c);
           break;
         case 2:
-          x1c = 2.003;
-          x2c = 2.002;
-          x3c = 2.001;
-          x4c = 2;
+          x1c = mpcmplx("2.003");
+          x2c = mpcmplx("2.002");
+          x3c = mpcmplx("2.001");
+          x4c = mpcmplx("2");
           print_roots("CASE 2", x1c, x2c, x3c, x4c);
           break;
         case 3:
-          x1c = 1E53;
-          x2c = 1E50;
-          x3c = 1E49;
-          x4c = 1E47;
+          x1c = mpcmplx("1E53");
+          x2c = mpcmplx("1E50");
+          x3c = mpcmplx("1E49");
+          x4c = mpcmplx("1E47");
           print_roots("CASE 3", x1c, x2c, x3c, x4c);
           break;
         case 4:
-          x1c = 1E14;
-          x2c = 2;
-          x3c = 1;
-          x4c = -1;
+          x1c = mpcmplx("1E14");
+          x2c = mpcmplx("2");
+          x3c = mpcmplx("1");
+          x4c = mpcmplx("-1");
           print_roots("CASE 4", x1c, x2c, x3c, x4c);
           break;
         case 5:
-          x1c = -2E7;
-          x2c = 1E7;
-          x3c = 1;
-          x4c = -1;
+          x1c = mpcmplx("-2E7");
+          x2c = mpcmplx("1E7");
+          x3c = mpcmplx("1");
+          x4c = mpcmplx("-1");
           print_roots("CASE 5", x1c, x2c, x3c, x4c);
           break;
         case 6:
-          x1c = 1E7;
-          x2c = -1E6;
-          x3c = 1+I;
-          x4c = 1-I;
+          x1c = mpcmplx("1E7");
+          x2c = mpcmplx("-1E6");
+          x3c = mpcmplx("1+I");
+          x4c = mpcmplx("1-I");
           print_roots("CASE 6", x1c, x2c, x3c, x4c);
           break;
         case 7:
-          x1c = -7;
-          x2c = -4;
-          x3c = -1E6+I*1E5;
-          x4c = -1E6-I*1E5;
+          x1c = mpcmplx("-7");
+          x2c = mpcmplx("-4");
+          x3c = mpcmplx("-1E6","1E5");
+          x4c = mpcmplx("-1E6","-1E5");
           print_roots("CASE 7", x1c, x2c, x3c, x4c);
           break;
         case 8:
-          x1c = 1E8;
-          x2c = 11;
-          x3c = 1E3+I;
-          x4c = 1E3-I;
+          x1c = mpcmplx("1E8");
+          x2c = mpcmplx("11");
+          x3c = mpcmplx("1E3","1");
+          x4c = mpcmplx("1E3","-1");
           print_roots("CASE 8", x1c, x2c, x3c, x4c);
           break;
         case 9:
-          x1c = 1E7+I*1E6;
-          x2c = 1E7-I*1E6;
-          x3c = 1+2*I;
-          x4c = 1-2*I;
+          x1c = mpcmplx("1E7","1E6");
+          x2c = mpcmplx("1E7","-1E6");
+          x3c = mpcmplx("1","2");
+          x4c = mpcmplx("1","-2");
           print_roots("CASE 9", x1c, x2c, x3c, x4c);
           break;
         case 10:
-          x1c = 1E4+3*I;
-          x2c = 1E4-3*I;
-          x3c = -7+1E3*I;
-          x4c = -7-1E3*I;
+          x1c = mpcmplx("1E4","3");
+          x2c = mpcmplx("1E4","-3");
+          x3c = mpcmplx("-7","1E3");
+          x4c = mpcmplx("-7","-1E3");
           print_roots("CASE 10", x1c, x2c, x3c, x4c);
           break;
         case 11:
-          x1c = 1.001+4.998*I;
-          x2c = 1.001-4.998*I;
-          x3c = 1.000+5.001*I;
-          x4c = 1.000-5.001*I;
+          x1c = mpcmplx("1.001","4.998");
+          x2c = mpcmplx("1.001","-4.998");
+          x3c = mpcmplx("1.000","5.001");
+          x4c = mpcmplx("1.000","-5.001");
           print_roots("CASE 11", x1c, x2c, x3c, x4c);
           break;
         case 12:
-          x1c = 1E3+3*I;
-          x2c = 1E3-3*I;
-          x3c = 1E3+I;
-          x4c = 1E3-I;
+          x1c = mpcmplx("1E3","3");
+          x2c = mpcmplx("1E3","-3");
+          x3c = mpcmplx("1E3","1");
+          x4c = mpcmplx("1E3","-1");
           print_roots("CASE 12", x1c, x2c, x3c, x4c);
           break;
         case 13:
-          x1c = 2+1E4*I;
-          x2c = 2-1E4*I;
-          x3c = 1+1E3*I;
-          x4c = 1-1E3*I;
+          x1c = mpcmplx("2","1E4");
+          x2c = mpcmplx("2","-1E4");
+          x3c = mpcmplx("1","1E3");
+          x4c = mpcmplx("1","-1E3");
           print_roots("CASE 13", x1c, x2c, x3c, x4c);
           break;
         case 19:
-          x1c = 1E44;
-          x2c = 1E30;
-          x3c = 1E30;
-          x4c = 1.0;
+          x1c = mpcmplx("1E44");
+          x2c = mpcmplx("1E30");
+          x3c = mpcmplx("1E30");
+          x4c = mpcmplx("1.0");
           print_roots("CASE 19", x1c, x2c, x3c, x4c);
           break;
         case 20:
-          x1c = 1E14;
-          x2c = 1E7;
-          x3c = 1E7;
-          x4c = 1.0;
+          x1c = mpcmplx("1E14");
+          x2c = mpcmplx("1E7");
+          x3c = mpcmplx("1E7");
+          x4c = mpcmplx("1.0");
           print_roots("CASE 20", x1c, x2c, x3c, x4c);
           break;
         case 21:
-          x1c = 1E15;
-          x2c = 1E7;
-          x3c = 1E7;
-          x4c = 1.0;
+          x1c = mpcmplx("1E15");
+          x2c = mpcmplx("1E7");
+          x3c = mpcmplx("1E7");
+          x4c = mpcmplx("1.0");
           print_roots("CASE 21", x1c, x2c, x3c, x4c);
           break;
         case 22:
-          x1c = 1E154;
-          x2c = 1E152;
-          x3c = 10.0;
-          x4c = 1.0;
+          x1c = mpcmplx("1E154");
+          x2c = mpcmplx("1E152");
+          x3c = mpcmplx("10.0");
+          x4c = mpcmplx("1.0");
           print_roots("CASE 22", x1c, x2c, x3c, x4c);
           break;
         case 23:
           /* condition */
-          c[4] = 1.0;
-          c[3] = 1.0;
-          c[2] = 1.0;
-          c[1] = 3.0/8.0;
-          c[0] = 0.001;
+          c[4] = mpreal("1.0");
+          c[3] = mpreal("1.0");
+          c[2] = mpreal("1.0");
+          c[1] = mpreal("3.0/8.0");
+          c[0] = mpreal("0.001");
           printf("CASE 23\n");
           break;
         case 24:
-          S = 1E30;
-          c[4] = 1.0;
-          c[3] = -(1.0+1.0/S);
+          S = mpreal("1E30");
+          c[4] = mpreal("1.0");
+          c[3] = -(mpreal("1.0")+1.0/S);
           c[2] = 1.0/S - S*S;
           c[1] = S*S + S;
           c[0] = -S;
@@ -327,7 +327,10 @@ int main(int argc, char** argv)
       c[0] = mpcmplx(x1c*x2c*x3c*x4c).real();
     }
   else
-    csolREF[0]=csolREF[1]=csolREF[2]=csolREF[3]=0.0;
+    {
+      csolREF[0]=csolREF[1]=csolREF[2]=csolREF[3]=0.0;
+      csolREF[0]=csolREF[1]=csolREF[2]=csolREF[3]=0.0;
+    }
   cout << "(" << c[4] << ")*x^4+(" << c[3] << ")*x^3+(" << c[2] << ")*x^2+(" << c[1] << ")*x+(" << c[0]<< ")==0\n";
 
 
@@ -341,7 +344,7 @@ int main(int argc, char** argv)
   for (k1=0; k1 < 4; k1++)
     {
       if (caso <= 22)
-        cout << setprecision(15) << "root #"<< k1 <<  "=  " << csol[k1].real() << "+I*(" << csol[k1].imag() << ") [" << csolREF[k1].real() <<  " + I*(" << csolREF[k1] << "]\n"; 
+        cout << setprecision(15) << "root #"<< k1 <<  "=  " << csol[k1].real() << "+I*(" << csol[k1].imag() << ") [" << csolREF[k1].real() <<  " + I*(" << csolREF[k1].imag() << ")]\n"; 
       else
         cout << setprecision(15) << "root #"<< k1 <<  "=  " << csol[k1].real() << "+I*(" << csol[k1].imag() << ")\n";
     }
@@ -356,7 +359,7 @@ int main(int argc, char** argv)
   for (k1=0; k1 < 4; k1++)
     {
       if (caso <= 22)
-        cout << setprecision(50) << "root #"<< k1 <<  "=  " << csolmp[k1].real() << "+I*(" << csolmp[k1].imag() << ") [" << csolREFmp[k1].real() <<  " + I*(" << csolREFmp[k1] << "]\n"; 
+        cout << setprecision(50) << "root #"<< k1 <<  "=  " << csolmp[k1].real() << "+I*(" << csolmp[k1].imag() << ") [" << csolREFmp[k1].real() <<  " + I*(" << csolREFmp[k1].imag() << ")]\n"; 
       else
         cout << setprecision(50) << "root #"<< k1 <<  "=  " << csolmp[k1].real() << "+I*(" << csolmp[k1].imag() << ")\n";
     }
