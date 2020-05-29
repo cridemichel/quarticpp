@@ -1,6 +1,8 @@
 #define WP 200
 #include <boost/multiprecision/mpc.hpp>
 #include <boost/multiprecision/mpfr.hpp>
+#include<iostream>
+#include<fstream>
 using namespace boost;
 using namespace boost::multiprecision;
 using namespace boost::multiprecision::backends;
@@ -28,16 +30,17 @@ int perm[24][4]={
 void save_PE(long long int numtrials, int numpts, mpreal dlogdE, mpreal logdEmin)
 {
   fstream f;
-  int k, kk, ic;
+  int k, kk;
+  char fname[255];
   if (dojust == -1 || dojust == 0)
     {
-      sprintf(fname,"P_of_eps_rel-dbl.dat", );
+      sprintf(fname,"P_of_eps_rel-dbl.dat");
       f.open(fname, ios::trunc|ios::out);
       for (k=0; k < numpts; k++)
         {
-          if (PE[ic][k]==0) 
+          if (PE[k]==0) 
             continue;
-          f <<  k*dlogdE+logdEmin << " " <<  PEall[ic][k]/((double)numtrials)/4. << "\n";
+          f <<  k*dlogdE+logdEmin << " " <<  PE[k]/((double)numtrials)/4. << "\n";
         }
       f.close();
 
@@ -53,7 +56,7 @@ void save_PE(long long int numtrials, int numpts, mpreal dlogdE, mpreal logdEmin
 	}
        f.close();
     }
-  if (dojust == -1 || dojust=0)
+  if (dojust == -1 || dojust==0)
     {  
       for (k=0; k < numpts; k++)
         {
@@ -85,7 +88,7 @@ void save_PE(long long int numtrials, int numpts, mpreal dlogdE, mpreal logdEmin
             continue;
           f << k*dlogdE+logdEmin << " " << cumPE[k] << "\n";
         }
-      f.fclose();
+      f.close();
     }
   if (dojust==-1 || dojust == 1)
     {
@@ -96,7 +99,7 @@ void save_PE(long long int numtrials, int numpts, mpreal dlogdE, mpreal logdEmin
 	    {
 	      if (cumPEmp[k]==0)
 		continue;
-              f <<  k*dlogdE+logdEmin << " " <<< cumPEmp[k] << "\n";
+              f <<  k*dlogdE+logdEmin << " " << cumPEmp[k] << "\n";
 	    }
 	}
       else
@@ -169,7 +172,7 @@ int main(int argc, char **argv)
 
   long long int numtrials, its, numout, itsI;
   int numpts, ilogdE;
-  int num, k, k2, ic=0, okmp, okmp, nsample;
+  int k, k2, ic=0, nsample;
 
   srand48(4242);
   
@@ -230,7 +233,7 @@ int main(int argc, char **argv)
     }
   else
     {
-      cout << "numtrials=" << numtrials << "numout=" << nunmout << "cmplxreal=" << cmplxreal << "dojust=" << dojust << "\n"; 
+      cout << "numtrials=" << numtrials << " numout=" << numout << " cmplxreal=" << cmplxreal << " dojust=" << dojust << "\n"; 
     }
 
   x1c=x2c=x3c=x4c=0;
@@ -239,17 +242,17 @@ int main(int argc, char **argv)
       if (its > 0 && (its % (numtrials/numout) == 0))
 	{
           if (nsample == 0)
-	    printf("[SAMPLE A sig=%G %G]>>> its=%lld/%lld\n", sig, sig2, its, numtrials);
+	    printf("[SAMPLE A sig=%G %G]>>> its=%lld/%lld\n", double(sig), double(sig2), its, numtrials);
           else if (nsample==1)
-	    printf("[SAMPLE B sig=%G %G]>>> its=%lld/%lld\n", sig, sig2, its, numtrials);
+	    printf("[SAMPLE B sig=%G %G]>>> its=%lld/%lld\n", double(sig), double(sig2), its, numtrials);
 	  else if (nsample==2)
-	    printf("[SAMPLE C sig=%G %G]>>> its=%lld/%lld\n", sig, sig2, its, numtrials);
+	    printf("[SAMPLE C sig=%G %G]>>> its=%lld/%lld\n", double(sig), double(sig2), its, numtrials);
           else if (nsample==3)
-	    printf("[SAMPLE D sig=%G %G]>>> its=%lld/%lld\n", sig, sig2, its, numtrials);
+	    printf("[SAMPLE D sig=%G %G]>>> its=%lld/%lld\n", double(sig), double(sig2), its, numtrials);
 	  else if (nsample==4)
-            printf("[SAMPLE E sig=%G %G]>>> its=%lld/%lld\n", sig, sig2, its, numtrials);
+            printf("[SAMPLE E sig=%G %G]>>> its=%lld/%lld\n", double(sig), double(sig2), its, numtrials);
           else if (nsample==5)
-            printf("[SAMPLE F sig=%G %G]>>> its=%lld/%lld\n", sig, sig2, its, numtrials);
+            printf("[SAMPLE F sig=%G %G]>>> its=%lld/%lld\n", double(sig), double(sig2), its, numtrials);
 	  save_PE(its, numpts, dlogdE, logdEmin);
 	  sync();  
 	}
@@ -303,7 +306,7 @@ int main(int argc, char **argv)
 	  cmp[0] = mpcmplx(x1c*x2c*x3c*x4c).real();
 
           for (int i=0; i < 5; i++)
-            c[i] = double(cmp[i]) 
+            c[i] = double(cmp[i]); 
         
           exsol[0] = x1c;
 	  exsol[1] = x2c;
@@ -320,8 +323,8 @@ int main(int argc, char **argv)
       ic++;  
       if (dojust==-1 || dojust == 1 || cmplxreal==5)
 	{
-          Q.set_coeff(cmp);
-          Q.find_roots(rmp);
+          Qmp.set_coeff(cmp);
+          Qmp.find_roots(rmp);
           csolmp = rmp;
 	}
       if (cmplxreal==5)
@@ -329,10 +332,10 @@ int main(int argc, char **argv)
 	  for (k2=0; k2 < 4; k2++) 
 	    exsol[k2] = csolmp[k2];
 	}
-      if ((dojust == -1 || dojust == 1) && okmp)
+      if (dojust == -1 || dojust == 1)
 	sort_sol_opt(csolmp, exsol);
 
-      if ((dojust==-1 || dojust==1) && okmp)
+      if (dojust==-1 || dojust==1) 
 	{
 	  for (k=0; k < 4; k++)
 	    {
@@ -350,26 +353,24 @@ int main(int argc, char **argv)
 	}
       if (dojust == -1 || dojust==0)
         {
-          if (ic==0 && !okmp)
-            continue;
           for (k=0; k < 4; k++)
             {	
-              dE = (exsol[k]!=0)?cabs((csolall[ic][k] - exsol[k])/exsol[k]):
-                cabs(csolall[ic][k]) - exsol[k]; 
+              dE = (exsol[k]!=0)?abs((mpcmplx(csol[k]) - exsol[k])/exsol[k]):
+                abs(mpcmplx(csol[k]) - exsol[k]); 
               if (dE > 0.0)
                 {
                   logdE=log10(dE)-logdEmin;
                   ilogdE=(int)(logdE/dlogdE);
                   if (ilogdE >= 0 && ilogdE < numpts)
                     {
-                      (PEall[ic][ilogdE])++;
+                      (PE[ilogdE])++;
                     }
                 }
             }
         }
     }
   save_PE(numtrials, numpts, dlogdE, logdEmin);
-  printf("Finished\n");
+  cout << "Finished\n";
   sync();
   exit(0);
 }

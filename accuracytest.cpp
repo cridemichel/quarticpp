@@ -17,7 +17,7 @@ int perm[24][4]={
 
 void sort_sol_opt(pvector<mpcmplx,4>& sol, pvector<mpcmplx,4>& exsol)
 {
-  int k1, k2, k1min;
+  int k1, k2, k1min=0;
   mpreal v, vmin;
   pvector<mpcmplx,4> solt;
   for (k1=0; k1 < 24; k1++)
