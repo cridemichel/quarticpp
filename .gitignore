@@ -11,3 +11,4 @@ tags
 *.dSYM
 .clangd
 .criprojroot
+accuracytest

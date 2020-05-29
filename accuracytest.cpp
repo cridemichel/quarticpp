@@ -333,8 +333,6 @@ int main(int argc, char** argv)
     }
   cout << "(" << c[4] << ")*x^4+(" << c[3] << ")*x^3+(" << c[2] << ")*x^2+(" << c[1] << ")*x+(" << c[0]<< ")==0\n";
 
-
-  
   cpv << double(c[0]), double(c[1]), double(c[2]), double(c[3]), double(c[4]);
   cpvmp << c[0],c[1],c[2],c[3],c[4];
 

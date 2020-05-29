@@ -282,7 +282,6 @@ template <class ntype, class cmplx> void quartic<ntype,cmplx>::oqs_solve_cubic_a
 #ifdef FAST_MATH
   ntype rq3;
 #endif
- 
   Q = -b/3.0;
   R = 0.5*c;
   if (R==0)
@@ -565,10 +564,11 @@ template <class ntype, class cmplx> void quartic<ntype,cmplx>::oqs_solve_cubic_a
       theta = acos(R/sqrt(Q3));
 #endif
       sqrtQ=-2.0*sqrt(Q);
-      if (theta < pigr/2) 
+      if (theta < pigr/2.0) 
 	sol = sqrtQ*cos(theta/3.0);
       else 
 	sol = sqrtQ*cos((theta+2.0*pigr)/3.0);
+
     }
   else
     {
@@ -728,7 +728,6 @@ template <class ntype, class cmplx> void  quartic<ntype, cmplx>::oqs_calc_phi0(n
   dq=d+s*(c+s*(b+s*(a+s)));                      
   gg=bq*bq/9.0;
   hh=aq*cq;     
-  
   g=hh-4.0*dq-3.0*gg;                       /* eq. (60) */  
   h=(8.0*dq+hh-2.0*gg)*bq/3.0-cq*cq-dq*aq*aq; /* eq. (61) */          
   oqs_solve_cubic_analytic_depressed(g, h, rmax);
@@ -1129,13 +1128,7 @@ template <class ntype, class cmplx> void quartic<ntype,cmplx>::oqs_quartic_solve
   nsol=0;
   bl311 =ntype(2.)*b/ntype(3.)-phi0-l1*l1;   /* This is d2 as defined in eq. (18)*/ 
   dml3l3 = d-l3*l3;            /* dml3l3 is d3 as defined in eq. (9) with d2=0 */ 
-  
-  /*
-   * cout << setprecision(50) << "a=" << a << " b=" << b << " c=" << c << "d=" << d
-   *   << "\n";
-   * cout << setprecision(50) << "l1=" << l1 << " l3=" << l3 << " del2=" << del2 << 
-   *   "bl311=" << bl311 << " dml3l3=" << dml3l3 << "\n";
-   */
+
   /* Three possible solutions for d2 and l2 (see eqs. (18)-(20) and discussion which follows) */
   if (bl311!=0.0)
     {
