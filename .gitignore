@@ -1,3 +1,4 @@
+*.dat
 **/*swp
 Session.vim
 .viminfo
@@ -12,3 +13,4 @@ tags
 .clangd
 .criprojroot
 accuracytest
+statanalysis

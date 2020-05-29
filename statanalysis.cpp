@@ -1,4 +1,5 @@
-#define WP 50
+#define WP 60
+#define WPQ 50 
 #include <boost/multiprecision/mpc.hpp>
 #include <boost/multiprecision/mpfr.hpp>
 #include<iostream>
@@ -9,6 +10,8 @@ using namespace boost::multiprecision::backends;
 //we set 200 digits working precision!
 using mpreal=number<mpfr_float_backend<WP>>;
 using mpcmplx=number<mpc_complex_backend<WP>>;
+using mprealQ=number<mpfr_float_backend<WPQ>>;
+using mpcmplxQ=number<mpc_complex_backend<WPQ>>;
 #include"./quartic.hpp"
 double ranf(void)
 {
@@ -164,11 +167,13 @@ int main(int argc, char **argv)
   mpreal dE, x1;
   mpreal y1;
   pvector<double,5> c;
+  pvector<mprealQ,5> cmpQ;
   pvector<mpreal,5> cmp;
   pvector<complex<double>,4> r;
-  pvector<mpcmplx,4> rmp, csolmp;
+  pvector<mpcmplx,4> csolmp;
+  pvector<mpcmplxQ,4> rmpQ;
   quartic<double> Q;
-  quartic<mpreal,mpcmplx> Qmp;
+  quartic<mprealQ,mpcmplxQ> Qmp;
 
   long long int numtrials, its, numout, itsI;
   int numpts, ilogdE;
@@ -184,7 +189,7 @@ int main(int argc, char **argv)
   sig = 1.0;
   sig2= 1.0;
   logdEmax=10.0;
-  logdEmin=-WP;
+  logdEmin=-WPQ-2;
   numpts = PEPTS; 
   dlogdE = (logdEmax -logdEmin)/numpts;
 
@@ -324,9 +329,12 @@ int main(int argc, char **argv)
       ic++;  
       if (dojust==-1 || dojust == 1 || cmplxreal==5)
 	{
-          Qmp.set_coeff(cmp);
-          Qmp.find_roots(rmp);
-          csolmp = rmp;
+          for (int i=0; i < 5; i++)
+            cmpQ[i] = mprealQ(cmp[i]);
+          Qmp.set_coeff(cmpQ);
+          Qmp.find_roots(rmpQ);
+          for (int i=0; i < 4; i++)
+            csolmp[i] = mpcmplx(rmpQ[i]);
 	}
       if (cmplxreal==5)
 	{

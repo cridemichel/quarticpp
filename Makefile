@@ -25,4 +25,4 @@ statanalysis: statanalysis.cpp $(HEADERS)
 	$(CXX) $(CXXFLAGS) -I /usr/local/include/ $(LDFLAGS) -o statanalysis statanalysis.cpp  
 
 clean:
-	rm -f quartic quartic_mp *.o
+	rm -f quartic quartic_mp accuracytest statanalysis *.o
