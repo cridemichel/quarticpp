@@ -1,4 +1,4 @@
-#define WP 200
+#define WP 50
 #include <boost/multiprecision/mpc.hpp>
 #include <boost/multiprecision/mpfr.hpp>
 #include<iostream>
@@ -18,7 +18,7 @@ double ranf(void)
 int cmplxreal=0, restart, dojust=-1;
 mpreal cumPEmp[PEPTS],PEmp[PEPTS]; 
 mpreal cumPE[PEPTS], PE[PEPTS];
-pvector<complex<double>,4> csol;
+pvector<mpcmplx,4> csol;
 pvector<mpcmplx,4> exsol;
 
 int perm[24][4]={
@@ -184,7 +184,7 @@ int main(int argc, char **argv)
   sig = 1.0;
   sig2= 1.0;
   logdEmax=10.0;
-  logdEmin=-16.0;
+  logdEmin=-WP;
   numpts = PEPTS; 
   dlogdE = (logdEmax -logdEmin)/numpts;
 
@@ -318,7 +318,8 @@ int main(int argc, char **argv)
 	{
           Q.set_coeff(c);
           Q.find_roots(r);
-          csol = r;
+          for (int i=0; i < 4; i++)
+            csol[i] = mpcmplx(r[i]);
 	}
       ic++;  
       if (dojust==-1 || dojust == 1 || cmplxreal==5)
@@ -353,10 +354,11 @@ int main(int argc, char **argv)
 	}
       if (dojust == -1 || dojust==0)
         {
+          sort_sol_opt(csol, exsol);
           for (k=0; k < 4; k++)
             {	
-              dE = (exsol[k]!=0)?abs((mpcmplx(csol[k]) - exsol[k])/exsol[k]):
-                abs(mpcmplx(csol[k]) - exsol[k]); 
+              dE = (exsol[k]!=0)?abs((csol[k] - exsol[k])/exsol[k]):
+                abs(csol[k] - exsol[k]); 
               if (dE > 0.0)
                 {
                   logdE=log10(dE)-logdEmin;
