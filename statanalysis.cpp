@@ -43,7 +43,7 @@ void save_PE(long long int numtrials, int numpts, mpreal dlogdE, mpreal logdEmin
         {
           if (PE[k]==0) 
             continue;
-          f <<  k*dlogdE+logdEmin << " " <<  PE[k]/((double)numtrials)/4. << "\n";
+          f <<  k*dlogdE+logdEmin << " " <<  PE[k]/(mpreal(numtrials))/4. << "\n";
         }
       f.close();
 
@@ -55,7 +55,7 @@ void save_PE(long long int numtrials, int numpts, mpreal dlogdE, mpreal logdEmin
 	{
 	  if (PEmp[k]==0)
 	    continue;
-	  f <<  k*dlogdE+logdEmin <<  PEmp[k]/((long double)numtrials)/4. << "\n";
+	  f <<  k*dlogdE+logdEmin <<  PEmp[k]/(mpreal(numtrials))/4. << "\n";
 	}
        f.close();
     }
@@ -66,7 +66,7 @@ void save_PE(long long int numtrials, int numpts, mpreal dlogdE, mpreal logdEmin
           cumPE[k] = 0.0;
           for (kk=k; kk < numpts; kk++) 
             {
-              cumPE[k] += PE[kk]/((double)numtrials)/4.0;
+              cumPE[k] += PE[kk]/(mpreal(numtrials))/4.0;
             }
 	}
     }
@@ -77,7 +77,7 @@ void save_PE(long long int numtrials, int numpts, mpreal dlogdE, mpreal logdEmin
 	  cumPEmp[k] = 0.0;
 	  for (kk=k; kk < numpts; kk++) 
 	    {
-	      cumPEmp[k] += PEmp[kk]/((long double)numtrials)/4.0;
+	      cumPEmp[k] += PEmp[kk]/(mpreal(numtrials))/4.0;
 	    }
 	}
     }
