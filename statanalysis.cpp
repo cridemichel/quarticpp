@@ -6,7 +6,7 @@
 using namespace boost;
 using namespace boost::multiprecision;
 using namespace boost::multiprecision::backends;
-//we set 100 digits working precision!
+//we set 200 digits working precision!
 using mpreal=number<mpfr_float_backend<WP>>;
 using mpcmplx=number<mpc_complex_backend<WP>>;
 #include"./quartic.hpp"
@@ -45,7 +45,7 @@ void save_PE(long long int numtrials, int numpts, mpreal dlogdE, mpreal logdEmin
       f.close();
 
     }
-  if (dojust==-1 || (dojust >=0 && dojust==8))
+  if (dojust==-1 || dojust==1)
     {
       f.open("P_of_eps_rel-mp.dat", ios::trunc|ios::out);
       for (k=0; k < numpts; k++)
