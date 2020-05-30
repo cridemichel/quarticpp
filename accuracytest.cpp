@@ -99,10 +99,10 @@ void print_roots(const char *str, mpcmplx x1c, mpcmplx x2c,
                  mpcmplx x3c, mpcmplx x4c)
 {
   cout << str;
-  cout << "exact root #1=" << x1c.real() << "+I*(" << x1c.imag() <<  ")\n";
-  cout << "exact root #2=" << x2c.real() << "+I*(" << x2c.imag() <<  ")\n";
-  cout << "exact root #3=" << x3c.real() << "+I*(" << x3c.imag() <<  ")\n";
-  cout << "exact root #4=" << x4c.real() << "+I*(" << x4c.imag() <<  ")\n";
+  cout << setprecision(50) << "exact root #1=" << x1c.real() << "+I*(" << x1c.imag() <<  ")\n";
+  cout << setprecision(50) << "exact root #2=" << x2c.real() << "+I*(" << x2c.imag() <<  ")\n";
+  cout << setprecision(50) << "exact root #3=" << x3c.real() << "+I*(" << x3c.imag() <<  ")\n";
+  cout << setprecision(50) << "exact root #4=" << x4c.real() << "+I*(" << x4c.imag() <<  ")\n";
 }
 
 int main(int argc, char** argv)
