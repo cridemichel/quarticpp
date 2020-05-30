@@ -17,7 +17,7 @@ double ranf(void)
 {
   return drand48();
 }
-#define PEPTS 150
+#define PEPTS 500
 int cmplxreal=0, restart, dojust=-1;
 mpreal cumPEmp[PEPTS],PEmp[PEPTS]; 
 mpreal cumPE[PEPTS], PE[PEPTS];
@@ -55,7 +55,7 @@ void save_PE(long long int numtrials, int numpts, mpreal dlogdE, mpreal logdEmin
 	{
 	  if (PEmp[k]==0)
 	    continue;
-	  f <<  k*dlogdE+logdEmin <<  PEmp[k]/(mpreal(numtrials))/4. << "\n";
+	  f <<  k*dlogdE+logdEmin << " " <<  PEmp[k]/(mpreal(numtrials))/4. << "\n";
 	}
        f.close();
     }
@@ -174,7 +174,7 @@ int main(int argc, char **argv)
   pvector<mpcmplxQ,4> rmpQ;
   quartic<double> Q;
   quartic<mprealQ,mpcmplxQ> Qmp;
-
+  long long int dEzeromp=0, dEzero=0;
   long long int numtrials, its, numout, itsI;
   int numpts, ilogdE;
   int k, k2, ic=0, nsample;
@@ -189,10 +189,10 @@ int main(int argc, char **argv)
   sig = 1.0;
   sig2= 1.0;
   logdEmax=10.0;
-  logdEmin=-WPQ-2;
+  logdEmin=-WPQ-50;
   numpts = PEPTS; 
   dlogdE = (logdEmax -logdEmin)/numpts;
-
+  //cout << "dlogdE=" << dlogdE << "\n";
   if (argc>=2)
     numtrials=atoll(argv[1]);
   else 
@@ -358,6 +358,8 @@ int main(int argc, char **argv)
 		      (PEmp[ilogdE])++;
 		    }
 		}
+              else 
+                dEzeromp++;
 	    }
 	}
       if (dojust == -1 || dojust==0)
@@ -376,9 +378,16 @@ int main(int argc, char **argv)
                       (PE[ilogdE])++;
                     }
                 }
+              else
+                dEzero++;
             }
         }
     }
+  if (dojust==-1 || dojust==0)
+    cout << "Fraction of exact roots (double)=" << dEzero/(mpreal(numtrials)*4.0) << "\n";
+  if (dojust==-1 || dojust==1)
+    cout << "Fraction of exact roots (multiprecision)=" << dEzeromp/(mpreal(numtrials)*4.0) << "\n";
+
   save_PE(numtrials, numpts, dlogdE, logdEmin);
   cout << "Finished\n";
   sync();
