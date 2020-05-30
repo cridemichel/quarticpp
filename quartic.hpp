@@ -17,6 +17,7 @@ class quartic: public numeric_limits<ntype> {
   static const int n=4, N=4;
   pvector<ntype,5> coeff;
   pvector<ntype,5> cmon;
+  pvector<cmplx,5> coeffc, cmonc;
   const ntype pigr=acos(ntype(-1.0));
   ntype eps05, meps, maxf, maxf2, maxf3, scalfact, cubic_rescal_fact;
   int maxdigits;
@@ -158,7 +159,7 @@ public:
       cmplx bn=cmplx(0.0);
       for (int i=n; i >= 0; i--)
         {
-          bn = cmon[i] + bn*x;
+          bn = cmonc[i] + bn*x;
         }
       
       return bn;
@@ -169,11 +170,23 @@ public:
       cmplx bn=0.0;
       for (int i=n-1; i >= 0; i--)
         {
-          bn = (i+1)*cmon[i+1] + bn*x;
+          bn = (i+1)*cmonc[i+1] + bn*x;
         }
       return bn;
     }
-
+   ntype evalddpoly(cmplx x)
+    {
+      // evaluate second derivative of polynomail via Horner's formula 
+      ntype bn=0.0;
+      if (n == 1)
+        return 0;
+      for (int i=n-2; i >= 0; i--)
+        {
+          bn = (i+2)*(i+1)*cmonc[i+2] + bn*x;
+        }
+      return bn;
+    }
+  
    ntype evalpoly(ntype x)
     {
       // evaluate polynomail via Horner's formula 
@@ -254,17 +267,20 @@ public:
     {
       is_cmplx = 0;
       coeff = v;
-      cmon[n] = 1.0;
+      cmon[n] = cmonc[n] = 1.0;
       for (int i=n-1; i >=0; i--)
-        cmon[i] = coeff[i]/coeff[n];
+        {
+          cmon[i] = coeff[i]/coeff[n];
+          cmonc[i] = cmon[i];
+        }
     }
   void set_coeff(pvector<cmplx,5> v)
     {
       is_cmplx = 1;
-      coeff = v;
-      cmon[n] = 1.0;
+      coeffc = v;
+      cmonc[n] = 1.0;
       for (int i=n-1; i >=0; i--)
-        cmon[i] = coeff[i]/coeff[n];
+        cmonc[i] = coeffc[i]/coeffc[n];
     }
 
   quartic() 
@@ -1392,15 +1408,15 @@ template <class ntype, class cmplx> void quartic<ntype,cmplx>::oqs_quartic_solve
   int k1, k, kmin, nsol;
   ntype aq, bq, cq, dq;
   ntype rfactsq, rfact=1.0;
-  if (coeff[4]==0.0)
+  if (coeffc[4]==cmplx(0.0,0.0))
     {
       printf("That's not a quartic!\n");
       return;
     }
-  a=coeff[3]/coeff[4];
-  b=coeff[2]/coeff[4];
-  c=coeff[1]/coeff[4];
-  d=coeff[0]/coeff[4];
+  a=coeffc[3]/coeffc[4];
+  b=coeffc[2]/coeffc[4];
+  c=coeffc[1]/coeffc[4];
+  d=coeffc[0]/coeffc[4];
   oqs_calc_phi0_cmplx(a,b,c,d,phi0,0);
   // simple polynomial rescaling
   if (isnan(phi0.real())||isinf(phi0.real())||
