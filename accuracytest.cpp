@@ -117,7 +117,7 @@ int main(int argc, char** argv)
   mpreal c[5], S;
   pvector<complex<double>,4> csol, csolREF;
   pvector<mpcmplx,4> csolmp, csolREFmp;
-   static const mpcmplx  I = mpcmplx(0,1);
+  static const mpcmplx I = mpcmplx(0,1);
   int k1, caso;
   if (argc == 2)
     {
@@ -147,7 +147,7 @@ int main(int argc, char** argv)
           break;
         case 15:
           x1c = x2c = x3c = mpcmplx("1000");
-          x4c = mpcmplx("1E-15");
+          x4c = pow(mpreal("2"),-48);
           print_roots("CASE 15", x1c, x2c, x3c, x4c);
           break;
         case 16:
@@ -358,9 +358,9 @@ int main(int argc, char** argv)
   for (k1=0; k1 < 4; k1++)
     {
       if (caso <= 22)
-        cout << setprecision(50) << "root #"<< k1 <<  "=  " << csolmp[k1].real() << "+I*(" << csolmp[k1].imag() << ") [" << csolREFmp[k1].real() <<  " + I*(" << csolREFmp[k1].imag() << ")]\n"; 
+        cout << setprecision(30) << "root #"<< k1 <<  "=  " << csolmp[k1].real() << "+I*(" << csolmp[k1].imag() << ") [" << csolREFmp[k1].real() <<  " + I*(" << csolREFmp[k1].imag() << ")]\n"; 
       else
-        cout << setprecision(50) << "root #"<< k1 <<  "=  " << csolmp[k1].real() << "+I*(" << csolmp[k1].imag() << ")\n";
+        cout << setprecision(30) << "root #"<< k1 <<  "=  " << csolmp[k1].real() << "+I*(" << csolmp[k1].imag() << ")\n";
     }
   if (caso <=22)
     print_accuracy_at(csolmp, csolREFmp);

@@ -189,7 +189,7 @@ int main(int argc, char **argv)
   sig = 1.0;
   sig2= 1.0;
   logdEmax=10.0;
-  logdEmin=-WPQ-50;
+  logdEmin=-WPQ-1;
   numpts = PEPTS; 
   dlogdE = (logdEmax -logdEmin)/numpts;
   //cout << "dlogdE=" << dlogdE << "\n";
@@ -286,10 +286,15 @@ int main(int argc, char **argv)
 	}
       else if (cmplxreal==0)/* four real */
 	{
+#if 1
+          x1c=x2c=x3c=1000.0*mpcmplx(sig*(ranf()-0.5));
+          x4c = 1E-15*mpcmplx(sig*(ranf()-0.5));
+#else
 	  x1c = mpcmplx(sig*(ranf()-0.5));
 	  x2c = mpcmplx(sig*(ranf()-0.5));
 	  x3c = mpcmplx(sig*(ranf()-0.5));
 	  x4c = mpcmplx(sig*(ranf()-0.5));
+#endif
 	}
       
       if (cmplxreal == 5)
