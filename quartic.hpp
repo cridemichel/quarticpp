@@ -1078,7 +1078,6 @@ template <class ntype, class cmplx> void  quartic<ntype,cmplx>::oqs_solve_quadra
       roots[1]=cmplx(-a/2.0,-sqrtd/2.0);      
     }   
 }
-
 template <class ntype, class cmplx> void quartic<ntype,cmplx>::oqs_quartic_solver(pvector<cmplx,4>& roots)
 {
   /* USAGE:

@@ -147,6 +147,7 @@ int main(int argc, char** argv)
           break;
         case 15:
           x1c = x2c = x3c = mpcmplx("1000");
+          //x4c= mpreal("1E-15");
           x4c = pow(mpreal("2"),-48);
           print_roots("CASE 15", x1c, x2c, x3c, x4c);
           break;
