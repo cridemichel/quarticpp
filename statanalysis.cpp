@@ -286,7 +286,7 @@ int main(int argc, char **argv)
 	}
       else if (cmplxreal==0)/* four real */
 	{
-#if 1
+#if 0
           x1c=x2c=x3c=1000.0*mpcmplx(sig*(ranf()-0.5));
           x4c = 1E-15*mpcmplx(sig*(ranf()-0.5));
 #else
