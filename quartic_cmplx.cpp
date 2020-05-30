@@ -36,7 +36,7 @@ int main(void)
       cout << setprecision(WP) << "p(#" << cc << ")=" << Q.evalpoly(r0) << "\n\n";
       cc++;
     }
-  cout << "p=" << Q.evalpoly(mpreal(1.0)) << "\n";
+  cout << "p=" << Q.evalpoly(mpcmplx(1.0)) << "\n";
   //cout << setprecision(WP) << "MPSOLVE p(4.6356013430199667501755766197408175062413493523496385264695)=" << Q.evalpoly(mpreal("4.6356013430199667501755766197408175062413493523496385264695")) << "\n";
   return 0;
 }

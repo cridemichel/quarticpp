@@ -362,9 +362,12 @@ int main(int argc, char** argv)
         cout << setprecision(30) << "root #"<< k1 <<  "=  " << csolmp[k1].real() << "+I*(" << csolmp[k1].imag() << ") [" << csolREFmp[k1].real() <<  " + I*(" << csolREFmp[k1].imag() << ")]\n"; 
       else
         cout << setprecision(30) << "root #"<< k1 <<  "=  " << csolmp[k1].real() << "+I*(" << csolmp[k1].imag() << ")\n";
+      cout << setprecision(30) << "p(root)=" << Qmp.evalpoly(csolmp[k1]) << "\n"; 
     }
   if (caso <=22)
     print_accuracy_at(csolmp, csolREFmp);
+
+ 
 
   exit(-1);
 } 

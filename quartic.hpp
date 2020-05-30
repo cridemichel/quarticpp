@@ -187,11 +187,14 @@ public:
       return bn;
     }
   
-   cmplx evalpoly(ntype x)
+   ntype evalpoly(ntype x)
     {
       // evaluate polynomail via Horner's formula 
       if (is_cmplx)
-        return evalpoly(cmplx(x));
+        {
+          cout << "[evalpoly] for a complex polynomial argument must be a complex number";
+          return 0.0;
+        }
       ntype bn=0.0;
       for (int i=n; i >= 0; i--)
         {
@@ -200,12 +203,15 @@ public:
       return bn;
     }
 
-   cmplx evaldpoly(ntype x)
+   ntype evaldpoly(ntype x)
     {
       // evaluate first derivative of polynomail via Horner's formula 
       ntype bn=0.0;
       if (is_cmplx)
-        return evaldpoly(cmplx(x));
+        {
+          cout << "[evaldpoly] for a complex polynomial argument must be a complex number";
+          return 0.0;
+        }
    
       for (int i=n-1; i >= 0; i--)
         {
@@ -213,13 +219,16 @@ public:
         }
       return bn;
     }
-  cmplx evalddpoly(ntype x)
+  ntype evalddpoly(ntype x)
     {
       // evaluate second derivative of polynomail via Horner's formula 
       ntype bn=0.0;
       if (is_cmplx)
-        return evalddpoly(cmplx(x));
-   
+        {
+          cout << "[evalddpoly] for a complex polynomial argument must be a complex number";
+          return 0.0;
+        }
+      
       if (n == 1)
         return 0;
       for (int i=n-2; i >= 0; i--)
