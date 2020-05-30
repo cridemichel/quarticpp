@@ -187,9 +187,11 @@ public:
       return bn;
     }
   
-   ntype evalpoly(ntype x)
+   cmplx evalpoly(ntype x)
     {
       // evaluate polynomail via Horner's formula 
+      if (is_cmplx)
+        return evalpoly(cmplx(x));
       ntype bn=0.0;
       for (int i=n; i >= 0; i--)
         {
@@ -198,21 +200,26 @@ public:
       return bn;
     }
 
-  ntype evaldpoly(ntype x)
+   cmplx evaldpoly(ntype x)
     {
       // evaluate first derivative of polynomail via Horner's formula 
       ntype bn=0.0;
-
+      if (is_cmplx)
+        return evaldpoly(cmplx(x));
+   
       for (int i=n-1; i >= 0; i--)
         {
           bn = (i+1)*cmon[i+1] + bn*x;
         }
       return bn;
     }
-  ntype evalddpoly(ntype x)
+  cmplx evalddpoly(ntype x)
     {
       // evaluate second derivative of polynomail via Horner's formula 
       ntype bn=0.0;
+      if (is_cmplx)
+        return evalddpoly(cmplx(x));
+   
       if (n == 1)
         return 0;
       for (int i=n-2; i >= 0; i--)
