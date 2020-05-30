@@ -274,7 +274,8 @@ public:
     {
       is_cmplx = 0;
       coeff = v;
-      cmon[n] = cmonc[n] = 1.0;
+      cmon[n] = 1.0;
+      cmonc[n] = 1.0;
       for (int i=n-1; i >=0; i--)
         {
           cmon[i] = coeff[i]/coeff[n];
