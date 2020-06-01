@@ -448,8 +448,8 @@ template <class ntype, class cmplx> void quartic<ntype,cmplx>::oqs_solve_cubic_a
           QR=Q/R;
           QRSQ=QR*QR; 
           KK=1.0 - Q*QRSQ;
-          Ap = -pow(R*(1.0+sqrt(KK)), 1.0/3.0);
-          Am = -pow(R*(1.0-sqrt(KK)), 1.0/3.0);
+          Ap = -exp(log(R*(1.0+sqrt(KK)))/3.0);
+          Am = -exp(log(R*(1.0-sqrt(KK)))/3.0);
           if (abs(Ap) > abs(Am))
             A = Ap;
           else
@@ -462,8 +462,8 @@ template <class ntype, class cmplx> void quartic<ntype,cmplx>::oqs_solve_cubic_a
           RQ = R/Q;
           KK = RQ*RQ/Q-1.0;
           KK *= Q*Q*Q;
-          Ap = -pow(R+sqrt(KK), 1.0/3.0);
-          Am = -pow(R-sqrt(KK), 1.0/3.0);
+          Ap = -exp(log(R+sqrt(KK))/3.0);
+          Am = -exp(log(R-sqrt(KK))/3.0);
           if (abs(Ap) > abs(Am))
             A = Ap;
           else
@@ -528,7 +528,7 @@ template <class ntype, class cmplx> void quartic<ntype,cmplx>::oqs_solve_cubic_a
         }
       else
         {
-          Ar = -copysign(ntype(1.0),ntype(R.real()))*pow(abs(R.real()) + sqrt(R2r - Q3r),1.0/3.0);
+          Ar = -copysign(ntype(1.0),ntype(R.real()))*cbrt(abs(R.real()) + sqrt(R2r - Q3r));
           if (Ar==0.0)
             Br=0.0;
           else
@@ -539,8 +539,10 @@ template <class ntype, class cmplx> void quartic<ntype,cmplx>::oqs_solve_cubic_a
   else
     {
       K=sqrt(R2 - Q3);
-      Ap = -pow(R + K,1.0/3.0);
-      Am = -pow(R - K,1.0/3.0);
+      Ap = -exp(log(R + K)/ntype(3.0));
+      Am = -exp(log(R + K)/ntype(3.0));
+      //Ap = -pow(R + K,1.0/3.0);
+      //Am = -pow(R - K,1.0/3.0);
       if (abs(Ap) > abs(Am))
         A=Ap;
       else 
@@ -605,7 +607,7 @@ template <class ntype, class cmplx> void quartic<ntype,cmplx>::oqs_solve_cubic_a
     }
   else
     {
-      A = -copysign((ntype)1.0,R)*pow(abs(R) + sqrt(R2 - Q3),1.0/3.0);
+      A = -copysign((ntype)1.0,R)*cbrt(abs(R) + sqrt(R2 - Q3));
        if (A==0.0)
 	B=0.0;
       else
