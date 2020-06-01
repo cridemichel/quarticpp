@@ -1,17 +1,40 @@
 #define WP 60
 #define WPQ 50 
-#include <boost/multiprecision/mpc.hpp>
-#include <boost/multiprecision/mpfr.hpp>
-#include<iostream>
-#include<fstream>
+#define MPC_MP
+#ifdef CPP_MP
+#include <boost/multiprecision/cpp_bin_float.hpp> 
+#include <boost/multiprecision/cpp_complex.hpp>
 using namespace boost;
 using namespace boost::multiprecision;
 using namespace boost::multiprecision::backends;
-//we set 200 digits working precision!
+using mpreal = number<cpp_bin_float<WP>>;
+using mpcmplx = cpp_complex<WP>;
+using mprealQ = number<cpp_bin_float<WPQ>>;
+using mpcmplxQ = cpp_complex<WPQ>;
+#elif defined(GMP_MP)
+#include <boost/multiprecision/gmp.hpp>
+#include <boost/multiprecision/complex_adaptor.hpp>
+using namespace boost;
+using namespace boost::multiprecision;
+using namespace boost::multiprecision::backends;
+using mpreal=number<gmp_float<WP>>;
+using mpcmplx=number<complex_adaptor<gmp_float<WP>>>;
+using mprealQ=number<gmp_float<WPQ>>;
+using mpcmplxQ=number<complex_adaptor<gmp_float<WPQ>>>;
+#elif defined(MPC_MP)
+#include <boost/multiprecision/mpc.hpp>
+#include <boost/multiprecision/mpfr.hpp>
+using namespace boost;
+using namespace boost::multiprecision;
+using namespace boost::multiprecision::backends;
+//we set 100 digits working precision!
 using mpreal=number<mpfr_float_backend<WP>>;
 using mpcmplx=number<mpc_complex_backend<WP>>;
 using mprealQ=number<mpfr_float_backend<WPQ>>;
 using mpcmplxQ=number<mpc_complex_backend<WPQ>>;
+#endif
+#include<iostream>
+#include<fstream>
 #include"./quartic.hpp"
 double ranf(void)
 {

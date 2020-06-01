@@ -1,4 +1,22 @@
 #define WP 200
+#define MPC_MP
+#ifdef CPP_MP
+#include <boost/multiprecision/cpp_bin_float.hpp> 
+#include <boost/multiprecision/cpp_complex.hpp>
+using namespace boost;
+using namespace boost::multiprecision;
+using namespace boost::multiprecision::backends;
+using mpreal = number<cpp_bin_float<WP>>;
+using mpcmplx = cpp_complex<WP>;
+#elif defined(GMP_MP)
+#include <boost/multiprecision/gmp.hpp>
+#include <boost/multiprecision/complex_adaptor.hpp>
+using namespace boost;
+using namespace boost::multiprecision;
+using namespace boost::multiprecision::backends;
+using mpreal=number<gmp_float<WP>>;
+using mpcmplx=number<complex_adaptor<gmp_float<WP>>>;
+#elif defined(MPC_MP)
 #include <boost/multiprecision/mpc.hpp>
 #include <boost/multiprecision/mpfr.hpp>
 using namespace boost;
@@ -7,6 +25,7 @@ using namespace boost::multiprecision::backends;
 //we set 100 digits working precision!
 using mpreal=number<mpfr_float_backend<WP>>;
 using mpcmplx=number<mpc_complex_backend<WP>>;
+#endif
 #include"./quartic.hpp"
 
 int perm[24][4]={

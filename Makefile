@@ -5,7 +5,7 @@ endif
 ifeq (,$(findstring intercept,$(CC)))
 CC=gcc
 endif
-BOOST_LIB=-L /usr/local/lib -lmpc -lmpfr
+BOOST_LIB=-L /usr/local/lib -lmpc -lmpfr -lgmp
 CXXFLAGS= -Wall -std=c++17 -O3 -I /usr/local/include/ $(LDFLAGS) 
 CFLAGS= -Wall -O3 
 HEADERS=./quartic.hpp ./pvector.hpp 
