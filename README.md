@@ -16,7 +16,7 @@ you obtain the following executables:
 
 **quartic**: example of usage of quartic.hpp class for solving quartic equations
 
-**quartic_mp**:  example of usage of quartic.hpp to solve quartic in multiple precisione (using boost)
+**quartic_mp**:  example of usage of quartic.hpp to solve quartic in multiple precision (using boost)
 
 **quartic_cmplx**: solution of a complex quartic
 
