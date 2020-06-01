@@ -608,7 +608,7 @@ template <class ntype, class cmplx> void quartic<ntype,cmplx>::oqs_solve_cubic_a
   else
     {
       A = -copysign((ntype)1.0,R)*cbrt(abs(R) + sqrt(R2 - Q3));
-       if (A==0.0)
+      if (A==0.0)
 	B=0.0;
       else
 	B = Q/A;
