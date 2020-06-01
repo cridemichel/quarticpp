@@ -12,13 +12,13 @@ make all
 
 you obtain the following executables:
 
-quartic: example of usage of quartic.hpp class for solving quartic equations
+**quartic**: example of usage of quartic.hpp class for solving quartic equations
 
-quartic_mp:  example of usage of quartic.hpp to solve quartic in multiple precisione (using boost)
+**quartic_mp**:  example of usage of quartic.hpp to solve quartic in multiple precisione (using boost)
 
-quartic_cmplx: solution of a complex quartic
+**quartic_cmplx**: solution of a complex quartic
 
-statanalysis: it performs the statistical analyses shown in Figs. 2-4 of the ACM paper. 
+**statanalysis**: it performs the statistical analyses shown in Figs. 2-4 of the ACM paper. 
 The syntax is the following (where '>' is the shell prompt string):
 
 ```bash
@@ -41,7 +41,7 @@ where:
 	for the analysis, where 0=dbl (double) and 1=mp (multiprecision),
 	(-1 performance both tests)
 
-accuracytest: It performs the accuracy tests shown in Table 1 of the ACM paper.
+**accuracytest**: It performs the accuracy tests shown in Table 1 of the ACM paper.
 The syntax is (where '>' is the shell prompt string):
 
 ```bash
