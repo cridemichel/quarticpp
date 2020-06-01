@@ -540,7 +540,7 @@ template <class ntype, class cmplx> void quartic<ntype,cmplx>::oqs_solve_cubic_a
     {
       K=sqrt(R2 - Q3);
       Ap = -exp(log(R + K)/ntype(3.0));
-      Am = -exp(log(R + K)/ntype(3.0));
+      Am = -exp(log(R - K)/ntype(3.0));
       //Ap = -pow(R + K,1.0/3.0);
       //Am = -pow(R - K,1.0/3.0);
       if (abs(Ap) > abs(Am))
