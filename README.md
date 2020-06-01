@@ -1,6 +1,7 @@
 # QUARTICPP
-a very accurate and very efficient quartic solver based on the paper 
+A very accurate and very efficient quartic solver based on the paper 
 ACM Transactions on Mathematical Software May 2020 Article No.: 20 https://doi.org/10.1145/3386241.
+With this class you can solve both real and complex quartics in double or multiple precision (see below).
 In addition to headers you will find some .cpp files with examples on how to use this class.
 Multiprecision is implemented through boost multiprecision libraries (https://www.boost.org/doc/libs/1_73_0/libs/multiprecision/doc/html/index.html).
 Before compiling change the directories related to boost in the Makefile (BOOSTLIBDIR and BOOSTHDRDIR).
