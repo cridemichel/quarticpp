@@ -27,17 +27,17 @@ The syntax is the following (where '>' is the shell prompt string):
 
 where:
 
-<trials>: it is the number of roots (samples A-E) or coefficients (sample F) to generate
+*trials*: it is the number of roots (samples A-E) or coefficients (sample F) to generate
 
-<output>: every <output> trials save the the probability distribution function P(eps_rel) 
+*output*: every <output> trials save the the probability distribution function P(eps_rel) 
 	in the file named P_of_eps_rel-XXX.dat and the cumulative distribution function F(eps_rel) 
 	in the file named F_of_eps_rel-XXX.dat, where XXX can be dbl (for double precision) or mp (for multiprecision)   
 
-<sample>: it is an integer between 0 and 5 which specifies the sample to generate 
+*sample*: it is an integer between 0 and 5 which specifies the sample to generate 
 	according to Table 4 with 0={sample A}, 1={sample B}, 2={sample C}, 3={sample D}, 4={sample E} and
 	5={sample F}
 
-<solver>: it is 0 or 1 which specifies the precision to use  
+*solver*: it is 0 or 1 which specifies the precision to use  
 	for the analysis, where 0=dbl (double) and 1=mp (multiprecision),
 	(-1 performance both tests)
 
@@ -48,6 +48,7 @@ The syntax is (where '>' is the shell prompt string):
 > accuracytest <case>
 ```
 
-where <case> is an integer between 1 and 24, which corresponds to the 24
+where 
+*case* is an integer between 1 and 24, which corresponds to the 24
 cases shown in Table 1 of the ACM paper.
 
