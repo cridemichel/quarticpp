@@ -1,4 +1,6 @@
 #define WP 200
+// N.B. you can use either CPP, GMP or MPC backend by
+// defining CPP_MP, GMP_MP or MPC_MP
 #define MPC_MP
 #ifdef CPP_MP
 #include <boost/multiprecision/cpp_bin_float.hpp> 
