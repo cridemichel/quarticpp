@@ -41,7 +41,7 @@ where:
 
 *solver*: it is 0 or 1 which specifies the precision to use  
 	for the analysis, where 0=dbl (double) and 1=mp (multiprecision),
-	(-1 performance both tests)
+	(-1 perform both tests)
 
 **accuracytest**: It performs the accuracy tests shown in Table 1 of the ACM paper.
 The syntax is (where '>' is the shell prompt string):
