@@ -2,7 +2,7 @@
 a very accurate and very efficient quartic solver based on the paper 
 ACM Transactions on Mathematical Software May 2020 Article No.: 20 https://doi.org/10.1145/3386241.
 In addition to headers you will find some .cpp files with examples on how to use this class.
-Multiprecision is implemented through boost multiprecision libraries (https://www.boost.org/doc/libs/1_73_0/libs/multiprecision/doc/html/index.html)
+Multiprecision is implemented through boost multiprecision libraries (https://www.boost.org/doc/libs/1_73_0/libs/multiprecision/doc/html/index.html).
 Before compiling change the directories related to boost in the Makefile (BOOSTLIBDIR and BOOSTHDRDIR).
 If you installed boost through homebrew (https://brew.sh) the Makefile should work out of the box.
 
