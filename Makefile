@@ -11,7 +11,7 @@ BOOSTLIBDIR=/usr/local/lib
 BOOSTHDRDIR=/usr/local/include
 ############################################################
 BOOST_LIB=-L $(BOOSTLIBDIR) -lmpc -lmpfr -lgmp
-CXXFLAGS= -Wall -std=c++17 -O3 -I $(BOOSTHDRDIR) $(LDFLAGS) 
+CXXFLAGS= -Wall -std=c++17 -O3 -I $(BOOSTHDRDIR) 
 HEADERS=./quartic.hpp ./pvector.hpp 
 LDFLAGS=-lm -llapack -lblas $(BOOST_LIB) 
 all: quartic quartic_mp quartic_cmplx accuracytest statanalysis
