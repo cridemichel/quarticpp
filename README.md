@@ -2,15 +2,23 @@
 
 **[ For a generic polynomial solver which includes also this class please see https://github.com/cridemichel/polypp ]**
 
-A very accurate and very efficient quartic solver based on the paper 
+The C++ class *quartic.hpp* provides a very accurate and very efficient quartic solver based on the paper 
 ACM Transactions on Mathematical Software May 2020 Article No.: 20 https://doi.org/10.1145/3386241.
 With this class you can solve both real and complex quartics in double or multiple precision (see below).
 In addition to headers you will find some .cpp files with examples on how to use this class.
-Multiprecision is implemented through boost multiprecision libraries (https://www.boost.org/doc/libs/1_73_0/libs/multiprecision/doc/html/index.html).
-Before compiling change the directories related to boost in the Makefile (BOOSTLIBDIR and BOOSTHDRDIR).
-If you installed boost through homebrew (https://brew.sh) the Makefile should work out of the box.
+Multiprecision is implemented through boost multiprecision libraries (https://www.boost.org/doc/libs/1_73_0/libs/multiprecision/doc/html/index.html) and you need to have both boost and gmp (https://gmplib.org/) installed.
+Boost and gmp are conveniently provided by *boost* and *gmp* homebrew packages (https://brew.sh/). 
+Note that homebrew not only supports Mac OSX but also Linux and Windows (see https://docs.brew.sh/Homebrew-on-Linux).
+To build the sources you need a c++ compiler which complies with *c++17*. It is strongly recommended to install g++ from homebrew. The package is called gcc and it will provide the executable g++-9.
 
-By issuing the command:
+The class itself can be used without boost and gmp and it does not require gcc from homebrew. 
+This means that the *quartic* example can be straightforwardly compiled by the command:
+```shell
+make quartic
+```
+without installing anything else.
+
+Instead, by issuing the command:
 
 ```bash
 make all
