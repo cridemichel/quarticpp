@@ -1,4 +1,6 @@
+BREWINST=.brew_packages_installed_
 ifneq ($(MAKECMDGOALS),quartic)
+ifeq ("$(wildcard $(BREWINST))","")
 ifeq ($(shell command -v brew 2> /dev/null),)
   $(error Please install homebrew first!)
 endif
@@ -13,16 +15,34 @@ ifeq ($(shell echo $(HBPACK)|grep gmp),)
   $(warning Please install gmp homebrew packages through the command:)
   $(warning > brew install gmp)
   $(error Aborting...)
+  GMPPAK=0
+else	
+  GMPPAK=1
 endif
 ifeq ($(shell echo $(HBPACK)|grep gcc),)
   $(warning Please install gcc homebrew packages through the command:)
   $(warning > brew install gcc)
   $(error Aborting...)
+  GCCPAK=0
+else	
+  $(shell CC=$[$CC+1])
+  GCCPAK=1
 endif
 ifeq ($(shell echo $(HBPACK)|grep boost),)
   $(warning Please install boost homebrew packages through the command:)
   $(warning > brew install boost)
   $(error Aborting...)
+  BOOSTPAK=0
+else
+  BOOSTPAK=1
+endif
+ifeq ($(GMPPAK),1)
+  ifeq ($(GCCPAK),1)
+    ifeq ($(BOOSTPAK),1) 
+      $(shell touch $(BREWINST))
+    endif
+  endif
+endif
 endif
 endif
 ifneq ($(shell command -v brew 2> /dev/null),)
@@ -46,7 +66,6 @@ else
 HBLIBS=
 HBHDRS=
 endif
-
 LIBS=$(HBLIBS) 
 CXXFLAGS= -Wall -std=c++17 -O3 
 CXXFLAGSMP=$(CXXFLAGS) $(HBHDRS)
@@ -70,4 +89,4 @@ statanalysis: statanalysis.cpp $(HEADERS)
 	$(CXX) $(CXXFLAGSMP) $(LDFLAGS) -o statanalysis statanalysis.cpp  
 
 clean:
-	rm -f quartic quartic_mp quartic_cmplx accuracytest statanalysis *.o
+	rm -f quartic quartic_mp quartic_cmplx accuracytest statanalysis *.o $(BREWINST)
