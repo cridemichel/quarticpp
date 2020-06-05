@@ -1,4 +1,7 @@
 # quarticpp
+
+**[ For a generic polynomial solver which includes also this class please see https://github.com/cridemichel/polypp ]**
+
 A very accurate and very efficient quartic solver based on the paper 
 ACM Transactions on Mathematical Software May 2020 Article No.: 20 https://doi.org/10.1145/3386241.
 With this class you can solve both real and complex quartics in double or multiple precision (see below).
