@@ -1,35 +1,73 @@
+ifneq ($(MAKECMDGOALS),quartic)
+ifeq ($(shell command -v brew 2> /dev/null),)
+  $(error Please install homebrew first!)
+endif
+# check if homebrew is installed 
+HBPACK=$(shell brew ls --versions gmp gcc boost) 
+ifeq ($(shell echo $(HBPACK)),)
+  $(warning Please install gmp, boost and gcc homebrew packages through the command:)
+  $(warning > brew install gmp boost gcc)
+  $(error Aborting...)
+endif
+ifeq ($(shell echo $(HBPACK)|grep gmp),)
+  $(warning Please install gmp homebrew packages through the command:)
+  $(warning > brew install gmp)
+  $(error Aborting...)
+endif
+ifeq ($(shell echo $(HBPACK)|grep gcc),)
+  $(warning Please install gcc homebrew packages through the command:)
+  $(warning > brew install gcc)
+  $(error Aborting...)
+endif
+ifeq ($(shell echo $(HBPACK)|grep boost),)
+  $(warning Please install boost homebrew packages through the command:)
+  $(warning > brew install boost)
+  $(error Aborting...)
+endif
+endif
+ifneq ($(shell command -v brew 2> /dev/null),)
+ifeq ($(HBDIR),)
+  HBDIR=$(shell brew --prefix)
+endif
+endif
 ifeq (,$(findstring intercept,$(CXX)))
-CXX=g++
+  CXXHB=$(HBDIR)/bin/g++-9
+  #check if g++-9 exists
+  ifneq ("$(wildcard $(HBDIR))","")
+    CXX=g++-9
+  else
+    CXX=g++
+  endif
 endif
-#ifneq ($(CC),intercept-c)
-ifeq (,$(findstring intercept,$(CC)))
-CC=gcc
+ifneq ($(HBDIR),)
+HBLIBS=-L $(HBDIR)/lib -lmpc -lmpfr -lgmp -lgmpxx
+HBHDRS=-I $(HBDIR)/include
+else
+HBLIBS=
+HBHDRS=
 endif
-############################################################
-#change these directories to reflect your boost installation
-BOOSTLIBDIR=/usr/local/lib 
-BOOSTHDRDIR=/usr/local/include
-############################################################
-BOOST_LIB=-L $(BOOSTLIBDIR) -lmpc -lmpfr -lgmp
-CXXFLAGS= -Wall -std=c++17 -O3 -I $(BOOSTHDRDIR) 
+
+LIBS=$(HBLIBS) 
+CXXFLAGS= -Wall -std=c++17 -O3 
+CXXFLAGSMP=$(CXXFLAGS) $(HBHDRS)
 HEADERS=./quartic.hpp ./pvector.hpp 
-LDFLAGS=-lm -llapack -lblas $(BOOST_LIB) 
+LDFLAGS=-lm $(LIBS) 
 all: quartic quartic_mp quartic_cmplx accuracytest statanalysis
 
 quartic: quartic.cpp $(HEADERS)
 	$(CXX) $(CXXFLAGS) -o quartic quartic.cpp  
 
 quartic_mp: quartic_mp.cpp $(HEADERS) 
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o quartic_mp quartic_mp.cpp  
+	$(CXX) $(CXXFLAGSMP) $(LDFLAGS) -o quartic_mp quartic_mp.cpp  
 
 quartic_cmplx: quartic_cmplx.cpp $(HEADERS) 
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o quartic_cmplx quartic_cmplx.cpp  
+	$(CXX) $(CXXFLAGSMP) $(LDFLAGS) -o quartic_cmplx quartic_cmplx.cpp  
 
 accuracytest: accuracytest.cpp $(HEADERS)
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o accuracytest accuracytest.cpp  
+	$(CXX) $(CXXFLAGSMP) $(LDFLAGS) -o accuracytest accuracytest.cpp  
 
 statanalysis: statanalysis.cpp $(HEADERS)
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o statanalysis statanalysis.cpp  
+	$(CXX) $(CXXFLAGSMP) $(LDFLAGS) -o statanalysis statanalysis.cpp  
 
 clean:
 	rm -f quartic quartic_mp quartic_cmplx accuracytest statanalysis *.o
