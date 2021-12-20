@@ -67,7 +67,8 @@ where
 cases shown in Table 1 of the ACM paper.
 
 If you use quarticpp in your research, please consider giving proper attribution by citing the following publication:
-A.G. Orellana and C. De Michele, Algorithm 1010: Boosting Efficiency in Solving Quartic Equations with No Compromise in Accuracy,
+	
+- A.G. Orellana and C. De Michele, Algorithm 1010: Boosting Efficiency in Solving Quartic Equations with No Compromise in Accuracy,
 *ACM Trans. Math. Softw.* **46**, 20:1-20:28 (2020) https://doi.org/10.1145/3386241
 
 	
