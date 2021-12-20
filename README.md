@@ -66,3 +66,9 @@ where
 *case* is an integer between 1 and 24, which corresponds to the 24
 cases shown in Table 1 of the ACM paper.
 
+If you use quarticpp in your research, please consider giving proper attribution by citing the following publication:
+A.G. Orellana and C. De Michele, Algorithm 1010: Boosting Efficiency in Solving Quartic Equations with No Compromise in Accuracy 46:2, 20 (2020)
+https://doi.org/10.1145/3386241
+
+	
+  
