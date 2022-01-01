@@ -7,6 +7,7 @@ int main(void)
   // This is the Case 2 among accuracy tests in ACM Trans. Math. Softw. 46, 2, Article 20 (May 2020),
   // https://doi.org/10.1145/3386241
   c << 16.048044012,-32.072044006,24.036011,-8.006,1.0; 
+  //c << 1.0,-17.678187643398402,-14.480985471938862,2.2459773428819827,1.0;
   Q.set_coeff(c);
  
   Q.find_roots(r);
