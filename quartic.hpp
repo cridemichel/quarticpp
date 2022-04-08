@@ -980,7 +980,10 @@ template <class ntype, class cmplx, bool dynamic> void quartic<ntype,cmplx, dyna
   /* Newton-Raphson described in sec. 2.3 of the manuscript for complex
    * coefficients a,b,c,d */
   int iter, k1, k2;
-  ntype x02, errf, errfold, xold[4], x[4], dx[4], det, Jinv[4][4], fvec[4], vr[4];
+  ntype x02, errf, errfold, x[4], dx[4], det, Jinv[4][4], fvec[4], vr[4];
+  ntype  errfa, errfmin;
+  ntype xmin[4];
+
   x[0] = AQ;
   x[1] = BQ;
   x[2] = CQ;
@@ -994,13 +997,17 @@ template <class ntype, class cmplx, bool dynamic> void quartic<ntype,cmplx, dyna
   fvec[2] = x[1] + x[0]*x[2] + x[3] - b;
   fvec[3] = x[0] + x[2] - a; 
   errf=0;
+  errfa=0;
   for (k1=0; k1 < 4; k1++)
     {
       if (vr[k1]==0)
         errf += abs(fvec[k1]);
       else
-        errf +=abs(fvec[k1]/vr[k1]);
+        errf += abs(fvec[k1]/vr[k1]);
+      errfa += abs(fvec[k1]);
+      xmin[k1]=x[k1];
     }
+  errfmin=errfa;
   for (iter = 0; iter < 8; iter++)
     {
       x02 = x[0]-x[2];
@@ -1029,8 +1036,8 @@ template <class ntype, class cmplx, bool dynamic> void quartic<ntype,cmplx, dyna
 	  for (k2=0; k2 < 4; k2++)
 	    dx[k1] += Jinv[k1][k2]*fvec[k2];
 	}
-      for (k1=0; k1 < 4; k1++)
-      	xold[k1] = x[k1];
+      //for (k1=0; k1 < 4; k1++)
+      //	xold[k1] = x[k1];
 
       for (k1=0; k1 < 4; k1++)
 	{
@@ -1042,26 +1049,34 @@ template <class ntype, class cmplx, bool dynamic> void quartic<ntype,cmplx, dyna
       fvec[3] = x[0] + x[2] - a; 
       errfold = errf;
       errf=0;
+      errfa = 0.0;
       for (k1=0; k1 < 4; k1++)
 	{
-        if (vr[k1]==0)
-	  errf += abs(fvec[k1]);
-        else
-	  errf += abs(fvec[k1]/vr[k1]);
-	}
+          if (vr[k1]==0)
+            errf += abs(fvec[k1]);
+          else
+            errf += abs(fvec[k1]/vr[k1]);
+          errfa += abs(fvec[k1]);
+        }
+      if (errfa < errfmin)
+        {
+          errfmin = errfa;
+          for (k1=0; k1 < 4; k1++)
+            xmin[k1]=x[k1];
+        }
       if (errf==0)
 	break;
       if (errf >= errfold)
 	{
-	  for (k1=0; k1 < 4; k1++)
-	    x[k1] = xold[k1];
+	  //for (k1=0; k1 < 4; k1++)
+	  //  x[k1] = xold[k1];
 	  break;
 	}
     }
-  AQ=x[0];
-  BQ=x[1];
-  CQ=x[2];
-  DQ=x[3];
+  AQ=xmin[0];
+  BQ=xmin[1];
+  CQ=xmin[2];
+  DQ=xmin[3];
 }
 
 template <class ntype, class cmplx, bool dynamic> void quartic<ntype,cmplx, dynamic>::NRabcdCCmplx(cmplx a, cmplx b, cmplx c, cmplx d, 
