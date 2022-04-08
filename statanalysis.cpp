@@ -214,7 +214,8 @@ int main(int argc, char **argv)
   sig = 1.0;
   sig2= 1.0;
   logdEmax=10.0;
-  logdEmin=-WPQ-1;
+  //logdEmin=-WPQ-1;
+  logdEmin=-18;
   numpts = PEPTS; 
   dlogdE = (logdEmax -logdEmin)/numpts;
   //cout << "dlogdE=" << dlogdE << "\n";
