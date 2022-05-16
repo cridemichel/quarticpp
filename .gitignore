@@ -10,11 +10,11 @@ GRTAGS
 GTAGS
 tags
 *.dSYM
-.clangd
+.clangd/**
 .criprojroot
 accuracytest
 statanalysis
 quartic_cmplx
 timingtest
 .brew_packages_installed_
-.cache
+.cache/**
