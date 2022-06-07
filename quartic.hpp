@@ -1008,6 +1008,8 @@ template <class ntype, class cmplx, bool dynamic> void quartic<ntype,cmplx, dyna
       xmin[k1]=x[k1];
     }
   errfmin=errfa;
+  if (errfa==0)
+    return;
   for (iter = 0; iter < 20; iter++)
     {
       x02 = x[0]-x[2];
@@ -1061,12 +1063,10 @@ template <class ntype, class cmplx, bool dynamic> void quartic<ntype,cmplx, dyna
           for (k1=0; k1 < 4; k1++)
             xmin[k1]=x[k1];
         }
-      if (errf==0)
+      if (errfa==0)
 	break;
       if (errf >= errfold)
-	{
-	  break;
-	}
+        break;
     }
   AQ=xmin[0];
   BQ=xmin[1];
@@ -1106,7 +1106,7 @@ template <class ntype, class cmplx, bool dynamic> void quartic<ntype,cmplx, dyna
     }
 
   errfmin = errfa;
-  if (errf==0)
+  if (errfa==0)
     return;
 
   for (iter = 0; iter < 20; iter++)
@@ -1164,7 +1164,7 @@ template <class ntype, class cmplx, bool dynamic> void quartic<ntype,cmplx, dyna
           for (k1=0; k1 < 4; k1++)
             xmin[k1]=x[k1];
         }
-      if (errf==0)
+      if (errfa==0)
         break;
       if (errf >= errfold)
         {
