@@ -54,7 +54,7 @@ ifeq (,$(findstring intercept,$(CXX)))
   CXXHB=$(HBDIR)/bin/g++-11
   #check if g++-9 exists
   ifneq ("$(wildcard $(HBDIR))","")
-    CXX=g++-11
+    CXX=g++-12
   else
     CXX=g++
   endif
