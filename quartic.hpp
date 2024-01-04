@@ -1386,6 +1386,7 @@ template <class ntype, class cmplx, bool dynamic> void quartic<ntype,cmplx, dyna
   else 
     realcase[0] = -1; // d2=0
   /* Case III: d2 is 0 or approximately 0 (in this case check which solution is better) */
+  //cout << setprecision(50) << "F=" << abs(d2)/(abs(2.*b/3.) + abs(phi0) + l1*l1)/meps << "\n";
   if (realcase[0]==-1 || (abs(d2) <= Kfact*meps*(abs(2.*b/3.) + abs(phi0) + l1*l1))) 
     {
       d3 = d - l3*l3;
