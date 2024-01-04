@@ -371,7 +371,6 @@ public:
     }
    void init_const(void)
     {
-      // factor to weaken condition in Eq. (2) in remark paper 
       meps = epsilon();
       // cout << setprecision(50) << "meps=" << meps << "\n";
       eps05 = pow(numeric_limits<ntype>::epsilon(),0.5);
