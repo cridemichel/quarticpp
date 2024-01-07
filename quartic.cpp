@@ -12,6 +12,7 @@ int main(void)
   // polynomial reported by tyuuni by github
   //c << 10147.0, 0.0, -30266.0, 0.0, -40413.0; 
   //c << 17654.0, 0.0, -15252.0, 0.0, -32906.0;
+  //Q.set_check_always_d20(true);
   Q.set_coeff(c);
   Q.show("p(x)="); 
   Q.find_roots(r);
