@@ -391,7 +391,7 @@ public:
       cubic_rescal_fact = pow(maxf, 1.0/3.0)/1.618034;
       goaleps=numeric_limits<ntype>::epsilon();   
       is_cmplx=-1;
-      check_always_d20 = false;
+      check_always_d20 = true;
    }
 
    quartic() 
