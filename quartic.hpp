@@ -1431,12 +1431,12 @@ template <class ntype, class cmplx, bool dynamic> void quartic<ntype,cmplx, dyna
   // d3 > meps*min{abs(d2*d),abs(d2*d2*l2*l2),abs(l3*l3*d2)     
   
   ntype rhs = meps*(abs(ntype((2.*b/3.)) + abs(phi0) + l1*l1));
-  if (check_always_d20 || realcase[0]==-1 || abs(d2) <= meps*(abs(2.*b/3.) + abs(phi0) + l1*l1))
+  if (check_always_d20 || realcase[0]==-1 || abs(bl311) <= meps*(abs(2.*b/3.) + abs(phi0) + l1*l1))
   //  || abs(detM) > meps*oqs_min3(abs(d2*d),abs(d2*d2*l2*l2),abs(l3*l3*d2) )) 
     {
       //if (!check_always_d20)
-       // cout << setprecision(WP) << abs(d2) << " " << rhs << "\n";
-      maxfact = (abs(d2)!=ntype(0.0))?(abs(d2) / rhs):ntype(1.0);
+      cout << setprecision(32) << abs(bl311) << " " << rhs << "\n";
+      maxfact = (abs(bl311)!=ntype(0.0))?(abs(bl311) / rhs):ntype(1.0);
       d3 = d - l3*l3;
       if (realcase[0]==1)
 	err0 = oqs_calc_err_abcd(a, b, c, d, aq, bq, cq, dq);

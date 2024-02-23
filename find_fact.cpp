@@ -125,10 +125,10 @@ void print_roots(const char *str, mpcmplx x1c, mpcmplx x2c,
                  mpcmplx x3c, mpcmplx x4c)
 {
   cout << str;
-  cout << setprecision(50) << "exact root #1=" << x1c.real() << "+I*(" << x1c.imag() <<  ")\n";
-  cout << setprecision(50) << "exact root #2=" << x2c.real() << "+I*(" << x2c.imag() <<  ")\n";
-  cout << setprecision(50) << "exact root #3=" << x3c.real() << "+I*(" << x3c.imag() <<  ")\n";
-  cout << setprecision(50) << "exact root #4=" << x4c.real() << "+I*(" << x4c.imag() <<  ")\n";
+  cout << setprecision(50) << "root #1=" << x1c.real() << "+I*(" << x1c.imag() <<  ")\n";
+  cout << setprecision(50) << "root #2=" << x2c.real() << "+I*(" << x2c.imag() <<  ")\n";
+  cout << setprecision(50) << "root #3=" << x3c.real() << "+I*(" << x3c.imag() <<  ")\n";
+  cout << setprecision(50) << "root #4=" << x4c.real() << "+I*(" << x4c.imag() <<  ")\n";
 }
 
 int main(int argc, char **argv)
@@ -149,8 +149,8 @@ int main(int argc, char **argv)
   int maxtrials = (argc > 1)?atoi(argv[1]):100000;
   for (i=0; i < maxtrials && !fine; i++)
     {
-      A = rint((drand48()-0.5)*1000);
-      B = rint((drand48()-0.5)*1000);
+      A = mpreal((drand48()-0.5)*1);
+      B = mpreal((drand48()-0.5)*1);
       //printf("CASE 26\n");
 
       cpvmp[4]=mpreal(1.0);
@@ -189,12 +189,20 @@ int main(int argc, char **argv)
         {
           if (tmpfact > epsfact)
             epsfact = tmpfact;
-#if 0
-          printf("BAD POLYNOMIAL\n");
-          printf("x^4 + (%.16G)*x^3 + (%.16G)*x^2 + (%.16G)*x + %.16G\n", c[3], c[2], c[1], c[0]);
-          print_roots("found roots", csol[0], csol[1], csol[2], csol[3]);
-          print_roots("exact roots", csolREF[0], csolREF[1], csolREF[2], csolREF[3]);
-          printf("err=%16G\n", err);
+#if 1
+          if (tmpfact > 10)
+            {
+              printf("BAD POLYNOMIAL\n");
+              //printf("x^4 + (%.16G)*x^3 + (%.16G)*x^2 + (%.16G)*x + %.16G\n", c[3], c[2], c[1], c[0]);
+              cout << setprecision(WP) << "x^4+(" << cpvmp[3] << ")*x^3 + (" << cpvmp[2] << ")*x^2 + (" << cpvmp[1] << ")*x + (" <<  cpvmp[0] << ") == 0\n";
+              print_roots("found roots", csolmp[0], csolmp[1], csolmp[2], csolmp[3]);
+              printf("\n");
+              print_roots("exact roots", csolREFmp[0], csolREFmp[1], csolREFmp[2], csolREFmp[3]);
+              //printf("err=%16G\n", err);
+              cout << "tmpfact=" << tmpfact << " err=" << err << "\n";
+
+              exit(-1);
+            }
 #endif
           fine = 0;
         }
