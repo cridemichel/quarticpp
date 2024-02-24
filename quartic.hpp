@@ -153,8 +153,8 @@ class quartic: public numeric_limits<ntype>, public quarticbase<ntype,cmplx, dyn
   inline void oqs_solve_cubic_analytic_depressed_handle_inf_cmplx(cmplx b, cmplx c, cmplx& sol);
   inline void oqs_solve_cubic_analytic_depressed(ntype b, ntype c, ntype& sol);
   inline void oqs_solve_cubic_analytic_depressed_cmplx(cmplx b, cmplx c, cmplx& sol);
-  inline ntype oqs_calc_phi0(ntype a, ntype b, ntype c, ntype d, ntype& phi0, int scaled);
-  inline cmplx oqs_calc_phi0_cmplx(cmplx a, cmplx b, cmplx c, cmplx d, cmplx& phi0, int scaled);
+  inline void oqs_calc_phi0(ntype a, ntype b, ntype c, ntype d, ntype& phi0, int scaled);
+  inline void oqs_calc_phi0_cmplx(cmplx a, cmplx b, cmplx c, cmplx d, cmplx& phi0, int scaled);
   inline ntype oqs_calc_err_ldlt(ntype b, ntype c, ntype d, ntype d2, ntype l1, ntype l2, ntype l3);
   inline ntype oqs_calc_err_abcd_cmplx(ntype a, ntype b, ntype c, ntype d, 
 	    			       cmplx aq, cmplx bq, cmplx cq, cmplx dq);
@@ -401,6 +401,7 @@ public:
       is_cmplx=-1;
       check_always_d20 = false;
       fact_d0 = eps05;
+      cout << setprecision(16) << "fact_d0=" << fact_d0 << "\n";
    }
 
    quartic() 
@@ -718,7 +719,7 @@ template <class ntype, class cmplx, bool dynamic> void quartic<ntype,cmplx,dynam
       sol = A+B; /* this is always largest root even if A=B */
     }
 }
-template <class ntype, class cmplx, bool dynamic> cmplx quartic<ntype,cmplx, dynamic>::oqs_calc_phi0_cmplx(cmplx a, cmplx b, cmplx c, cmplx d, cmplx& phi0, int scaled)
+template <class ntype, class cmplx, bool dynamic> void quartic<ntype,cmplx, dynamic>::oqs_calc_phi0_cmplx(cmplx a, cmplx b, cmplx c, cmplx d, cmplx& phi0, int scaled)
 {
   /* find phi0 as the dominant root of the depressed and shifted cubic 
    * in eq. (79) (see also the discussion in sec. 2.2 of the manuscript) */
@@ -835,9 +836,8 @@ template <class ntype, class cmplx, bool dynamic> cmplx quartic<ntype,cmplx, dyn
         }
     }
   phi0 = x;
-  return f;
 }
-template <class ntype, class cmplx, bool dynamic> ntype quartic<ntype, cmplx, dynamic>::oqs_calc_phi0(ntype a, ntype b, ntype c, ntype d, ntype& phi0, int scaled)
+template <class ntype, class cmplx, bool dynamic> void quartic<ntype, cmplx, dynamic>::oqs_calc_phi0(ntype a, ntype b, ntype c, ntype d, ntype& phi0, int scaled)
 {
   /* find phi0 as the dominant root of the depressed and shifted cubic 
    * in eq. (64) (see also the discussion in sec. 2.2 of the manuscript) */
@@ -936,8 +936,6 @@ template <class ntype, class cmplx, bool dynamic> ntype quartic<ntype, cmplx, dy
     	}
     }
   phi0 = x;
-  // Note that f is det(M) as in Eq. (22) of my ACM 2020
-  return f;
 }
 template <class ntype, class cmplx, bool dynamic> ntype  quartic<ntype,cmplx, dynamic>::oqs_calc_err_ldlt(ntype b, ntype c, ntype d, ntype d2, ntype l1, ntype l2, ntype l3)
 {
@@ -1256,7 +1254,7 @@ template <class ntype, class cmplx, bool dynamic> void quartic<ntype,cmplx, dyna
    * */
   cmplx acx1, bcx1, ccx1, dcx1,acx,bcx,ccx,dcx,cdiskr,zx1,zx2,zxmax,zxmin, qroots[2];
   ntype l2m[12], d2m[12], res[12], resmin, bl311, dml3l3, err0=0, err1=0, aq1, bq1, cq1, dq1; 
-  ntype a,b,c,d,phi0,aq,bq,cq,dq,d2,d3,l1,l2,l3, errmin, errv[3], aqv[3], cqv[3],gamma,del2, detM;
+  ntype a,b,c,d,phi0,aq,bq,cq,dq,d2,d3,l1,l2,l3, errmin, errv[3], aqv[3], cqv[3],gamma,del2;
   int realcase[2], whichcase, k1, k, kmin, nsol;
   ntype rfactsq, rfact=1.0;
 
@@ -1270,7 +1268,7 @@ template <class ntype, class cmplx, bool dynamic> void quartic<ntype,cmplx, dyna
   b=coeff[2]/coeff[4];
   c=coeff[1]/coeff[4];
   d=coeff[0]/coeff[4];
-  detM = oqs_calc_phi0(a,b,c,d,phi0,0);
+  oqs_calc_phi0(a,b,c,d,phi0,0);
   //cout << "phi0=" << phi0 << "\n";
   // simple polynomial rescaling
   if (isnan(phi0)||isinf(phi0))
@@ -1281,7 +1279,7 @@ template <class ntype, class cmplx, bool dynamic> void quartic<ntype,cmplx, dyna
       b /= rfactsq;
       c /= rfactsq*rfact;
       d /= rfactsq*rfactsq;
-      detM = oqs_calc_phi0(a,b,c,d,phi0,1);
+      oqs_calc_phi0(a,b,c,d,phi0,1);
     }
   //cout << setprecision(50) << "phi0=" << phi0 << "\n";
   l1=a/ntype(2.0);          /* eq. (4) */                                        
@@ -1422,7 +1420,6 @@ template <class ntype, class cmplx, bool dynamic> void quartic<ntype,cmplx, dyna
     realcase[0] = -1; // d2=0
   /* Case III: d2 is 0 or approximately 0 (in this case check which solution is better) */
   //cout << setprecision(50) << "F=" << abs(d2)/(abs(2.*b/3.) + abs(phi0) + l1*l1)/meps << "\n";
-  //cout << setprecision(50) << "d2=" << d2 << " detM=" << detM << " detM/d2=" << detM/d2 <<  "\n";
   //ntype minv = oqs_min3(abs(d2*d),abs(d2*d2*l2*l2),abs(l3*l3*d2));
 
   // CRITICAL FIX: 
@@ -1564,7 +1561,7 @@ template <class ntype, class cmplx, bool dynamic> void quartic<ntype,cmplx, dyna
    * */
   cmplx acx1, bcx1, ccx1, dcx1,acx,bcx,cdiskr,zx1,zx2,zxmax,zxmin, ccx, dcx;
   cmplx l2m[12], d2m[12], bl311, dml3l3; 
-  cmplx a,b,c,d,phi0,d2,d3,l1,l2,l3,acxv[3],ccxv[3],gamma,del2,qroots[2], detM;
+  cmplx a,b,c,d,phi0,d2,d3,l1,l2,l3,acxv[3],ccxv[3],gamma,del2,qroots[2];
   ntype res[12], resmin, err0, err1;
   ntype errmin, errv[3];
   int k1, k, kmin, nsol;
@@ -1579,7 +1576,7 @@ template <class ntype, class cmplx, bool dynamic> void quartic<ntype,cmplx, dyna
   b=coeffc[2]/coeffc[4];
   c=coeffc[1]/coeffc[4];
   d=coeffc[0]/coeffc[4];
-  detM=oqs_calc_phi0_cmplx(a,b,c,d,phi0,0);
+  oqs_calc_phi0_cmplx(a,b,c,d,phi0,0);
   // simple polynomial rescaling
   if (isnan(phi0.real())||isinf(phi0.real())||
       isnan(phi0.imag())||isinf(phi0.imag()))
@@ -1590,7 +1587,7 @@ template <class ntype, class cmplx, bool dynamic> void quartic<ntype,cmplx, dyna
       b /= rfactsq;
       c /= rfactsq*rfact;
       d /= rfactsq*rfactsq;
-      detM=oqs_calc_phi0_cmplx(a,b,c,d,phi0, 1);
+      oqs_calc_phi0_cmplx(a,b,c,d,phi0, 1);
     }
 
   l1=a/cmplx(2);        /* eq. (16) */                                        
