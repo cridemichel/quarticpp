@@ -1,6 +1,6 @@
 #include <ctime>
 #include <complex>
-#define WP 12
+#define WP 128
 // N.B. you can use either CPP, GMP or MPC backend by
 // defining CPP_MP, GMP_MP or MPC_MP
 #define MPC_MP
@@ -140,29 +140,34 @@ int main(int argc, char **argv)
   pvector<complex<double>,4> r;
   pvector<mpcmplx,4> rmp;
   mpcmplx x1c, x2c, x3c, x4c; 
-  mpreal c[5], epsfact=1.0, tmpfact, A, B, err;
+  mpreal c[5], epsfact=1.0, tmpfact, A, B, err, C, D;
   pvector<complex<double>,4> csol, csolREF;
   pvector<mpcmplx,4> csolmp, csolREFmp;
   static const mpcmplx I = mpcmplx(0,1);
-  srand48(time(NULL));
+  //srand48(time(NULL));
+  srand48(0);
   int i, fine = 0, k1;
   int maxtrials = (argc > 1)?atoi(argv[1]):100000;
   for (i=0; i < maxtrials && !fine; i++)
     {
       A = mpreal((drand48()-0.5)*1);
       B = mpreal((drand48()-0.5)*1);
+      C = mpreal((drand48()-0.5)*1);
+      D = mpreal((drand48()-0.5)*1);
+    
       //printf("CASE 26\n");
 
       cpvmp[4]=mpreal(1.0);
-      cpvmp[3]=mpreal(0.0);
+      cpvmp[3]=C;
       cpvmp[2]=A;
-      cpvmp[1]=mpreal(0.0);
+      cpvmp[1]=D;
       cpvmp[0]=B;
 
       Qmp.set_coeff(cpvmp);
 
       Qmp.set_check_always_d20(true);
       Qmp.find_roots(rmp);
+#if 0
       csolREFmp = rmp;
       tmpfact = Qmp.maxfact;
       Qmp.set_check_always_d20(false);
@@ -177,6 +182,7 @@ int main(int argc, char **argv)
         {
           err += abs(csolREFmp[k1])!=mpreal(0.0)?(abs(csolmp[k1]-csolREFmp[k1])/abs(csolREFmp[k1])):abs(csolmp[k1]-csolREFmp[k1]);
         }
+#endif
 #if 0
       cout << setprecision(30) << "err=" << err << "\n";
       Qmp.show("poly= ");
@@ -185,12 +191,13 @@ int main(int argc, char **argv)
           cout << "sol#" << k1 << setprecision(WP) << " " <<  csolmp[k1] << "\n";
         }
 #endif
+#if 0
       if (err > 0.1)
         {
           if (tmpfact > epsfact)
             epsfact = tmpfact;
-#if 1
-          if (tmpfact > 10)
+#if 0
+          if (tmpfact > 0.1)
             {
               printf("BAD POLYNOMIAL\n");
               //printf("x^4 + (%.16G)*x^3 + (%.16G)*x^2 + (%.16G)*x + %.16G\n", c[3], c[2], c[1], c[0]);
@@ -206,7 +213,8 @@ int main(int argc, char **argv)
 #endif
           fine = 0;
         }
+#endif
     }
-  cout << setprecision(20) << "maxfact=" <<  epsfact << "\n";;
+  //cout << setprecision(20) << "maxfact=" <<  epsfact << "\n";;
   exit(-1);
 }

@@ -157,6 +157,9 @@ class quartic: public numeric_limits<ntype>, public quarticbase<ntype,cmplx, dyn
   inline ntype oqs_calc_err_abcd_cmplx(ntype a, ntype b, ntype c, ntype d, 
 	    			       cmplx aq, cmplx bq, cmplx cq, cmplx dq);
   inline ntype oqs_calc_err_abcd(ntype a, ntype b, ntype c, ntype d, ntype aq, ntype bq, ntype cq, ntype dq);
+  inline ntype oqs_calc_err_abcd_cmplx_inc(ntype a, ntype b, ntype c, ntype d, 
+	    			       cmplx aq, cmplx bq, cmplx cq, cmplx dq, ntype err);
+  inline ntype oqs_calc_err_abcd_inc(ntype a, ntype b, ntype c, ntype d, ntype aq, ntype bq, ntype cq, ntype dq, ntype err);
   inline ntype oqs_calc_err_abc(ntype a, ntype b, ntype c, ntype aq, ntype bq, ntype cq, ntype dq); 
   inline void NRabcdCCmplx(cmplx a, cmplx b, cmplx c, cmplx d, cmplx& AQ, cmplx& BQ, cmplx& CQ, cmplx& DQ);
   inline void oqs_NRabcd(ntype a, ntype b, ntype c, ntype d, ntype& AQ, ntype& BQ, ntype& CQ, ntype& DQ);
@@ -963,6 +966,25 @@ ntype quartic<ntype, cmplx, dynamic>::oqs_calc_err_abcd_cmplx(ntype a, ntype b, 
   sum +=(a==0)?abs(aq + cq):abs(((aq + cq) - a)/a);
   return sum;
 }
+
+template <class ntype, class cmplx, bool dynamic> 
+ntype quartic<ntype, cmplx, dynamic>::oqs_calc_err_abcd_cmplx_inc(ntype a, ntype b,  ntype c, ntype d, cmplx aq, 
+                                                       cmplx bq, cmplx cq, cmplx dq, ntype err)
+{
+  /* Eq. (53) in the manuscript for complex alpha1 (aq), beta1 (bq), alpha2 (cq) and beta2 (dq) */
+  ntype sum;
+  sum = (d==0)?abs(bq*dq):abs((bq*dq-d)/d);
+  if (sum > err)
+    return sum;
+  sum += (c==0)?abs(bq*cq + aq*dq):abs(((bq*cq + aq*dq) - c)/c);
+  if (sum > err)
+    return sum;
+  sum +=(b==0)?abs(bq + aq*cq + dq):abs(((bq + aq*cq + dq) - b)/b);
+  if (sum > err)
+    return sum;
+  sum +=(a==0)?abs(aq + cq):abs(((aq + cq) - a)/a);
+  return sum;
+}
 template <class ntype, class cmplx, bool dynamic> ntype quartic<ntype, cmplx, dynamic>::oqs_calc_err_abcd(ntype a, ntype b, ntype c, ntype d, ntype aq, ntype bq, ntype cq, ntype dq)
 {
   /* Eq. (53) in the manuscript for real alpha1 (aq), beta1 (bq), alpha2 (cq) and beta2 (dq)*/
@@ -982,6 +1004,37 @@ template <class ntype, class cmplx, bool dynamic> ntype quartic<ntype, cmplx, dy
     sum +=abs(bq + aq*cq + dq);
   else 
     sum +=abs(((bq + aq*cq + dq) - b)/b);
+  if (a==0.0)
+    sum +=abs(aq + cq);
+  else 
+    sum +=abs(((aq + cq) - a)/a);
+  return sum;
+}
+template <class ntype, class cmplx, bool dynamic> ntype quartic<ntype, cmplx, dynamic>::oqs_calc_err_abcd_inc(ntype a, ntype b, ntype c, ntype d, ntype aq, ntype bq, ntype cq, ntype dq, ntype err)
+{
+  /* Eq. (53) in the manuscript for real alpha1 (aq), beta1 (bq), alpha2 (cq) and beta2 (dq)*/
+  ntype sum;
+
+  if (d==0.0)
+    sum = abs(bq*dq);
+  else
+    sum = abs((bq*dq-d)/d);
+  if (sum > err)
+    return sum;
+  if (c==0.0)
+    sum += abs(bq*cq + aq*dq);
+  else 
+    sum += abs(((bq*cq + aq*dq) - c)/c);
+  if (sum > err)
+    return sum;
+ 
+  if (b==0.0)
+    sum +=abs(bq + aq*cq + dq);
+  else 
+    sum +=abs(((bq + aq*cq + dq) - b)/b);
+  if (sum > err)
+    return sum;
+ 
   if (a==0.0)
     sum +=abs(aq + cq);
   else 
@@ -1430,13 +1483,21 @@ template <class ntype, class cmplx, bool dynamic> void quartic<ntype,cmplx, dyna
   // hence to consider d3 != 0 we require that
   // d3 > meps*min{abs(d2*d),abs(d2*d2*l2*l2),abs(l3*l3*d2)     
   
-  ntype rhs = meps*(abs(ntype((2.*b/3.)) + abs(phi0) + l1*l1));
-  if (check_always_d20 || realcase[0]==-1 || abs(bl311) <= meps*(abs(2.*b/3.) + abs(phi0) + l1*l1))
-  //  || abs(detM) > meps*oqs_min3(abs(d2*d),abs(d2*d2*l2*l2),abs(l3*l3*d2) )) 
+  if (check_always_d20 || realcase[0]==-1 || abs(d2) <= sqrt(meps)*(abs(ntype(2.)*b/ntype(3.)) + abs(phi0) + l1*l1))
+    //|| abs(detM) > meps*oqs_min3(abs(d2*d),abs(d2*d2*l2*l2),abs(l3*l3*d2) )) 
     {
       //if (!check_always_d20)
-      cout << setprecision(32) << abs(bl311) << " " << rhs << "\n";
-      maxfact = (abs(bl311)!=ntype(0.0))?(abs(bl311) / rhs):ntype(1.0);
+#if 0
+      ntype rhs = meps*(abs(ntype((ntype(2.)*b/ntype(3.))) + abs(phi0) + l1*l1));
+      cout << setprecision(32) << "d2=" << abs(d2) << " " << rhs << "\n";
+      cout << setprecision(32) << "phi0=" << phi0 << " l1*l1=" << l1*l1 << " b=" << abs(ntype(2.)*b/ntype(3.)) << "\n"; 
+      cout << "boh=" << (abs(ntype(2.)*b/ntype(3.)) + abs(phi0) + l1*l1)<<"\n";
+      cout << "meps=" << meps << "\n";
+      cout << setprecision(18) << "ariboh=" << meps*(abs(ntype(2./3.0)*b) + abs(phi0) + l1*l1) << "\n";
+#endif
+      //maxfact = (abs(d2)!=ntype(0.0))?(abs(d2 /(abs(ntype(2.)*b/ntype(3.)) + abs(phi0) + l1*l1))):ntype(1.0);
+      //cout << setprecision(32) << "maxfact=" << maxfact << "\n";
+      //maxfact /= meps;
       d3 = d - l3*l3;
       if (realcase[0]==1)
 	err0 = oqs_calc_err_abcd(a, b, c, d, aq, bq, cq, dq);
