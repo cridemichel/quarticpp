@@ -1483,7 +1483,7 @@ template <class ntype, class cmplx, bool dynamic> void quartic<ntype,cmplx, dyna
   // hence to consider d3 != 0 we require that
   // d3 > meps*min{abs(d2*d),abs(d2*d2*l2*l2),abs(l3*l3*d2)     
   
-  if (check_always_d20 || realcase[0]==-1 || abs(d2) <= sqrt(meps)*(abs(ntype(2.)*b/ntype(3.)) + abs(phi0) + l1*l1))
+  if (check_always_d20 || realcase[0]==-1 || abs(d2) <= meps*(abs(ntype(2.)*b/ntype(3.)) + abs(phi0) + l1*l1))
     //|| abs(detM) > meps*oqs_min3(abs(d2*d),abs(d2*d2*l2*l2),abs(l3*l3*d2) )) 
     {
       //if (!check_always_d20)
@@ -1495,9 +1495,9 @@ template <class ntype, class cmplx, bool dynamic> void quartic<ntype,cmplx, dyna
       cout << "meps=" << meps << "\n";
       cout << setprecision(18) << "ariboh=" << meps*(abs(ntype(2./3.0)*b) + abs(phi0) + l1*l1) << "\n";
 #endif
-      //maxfact = (abs(d2)!=ntype(0.0))?(abs(d2 /(abs(ntype(2.)*b/ntype(3.)) + abs(phi0) + l1*l1))):ntype(1.0);
+      maxfact = (abs(d2)!=ntype(0.0))?(abs(d2 /(abs(ntype(2.)*b/ntype(3.)) + abs(phi0) + l1*l1))):ntype(1.0);
       //cout << setprecision(32) << "maxfact=" << maxfact << "\n";
-      //maxfact /= meps;
+      maxfact /= meps;
       d3 = d - l3*l3;
       if (realcase[0]==1)
 	err0 = oqs_calc_err_abcd(a, b, c, d, aq, bq, cq, dq);

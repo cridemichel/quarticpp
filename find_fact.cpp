@@ -1,6 +1,6 @@
 #include <ctime>
 #include <complex>
-#define WP 128
+#define WP 64
 // N.B. you can use either CPP, GMP or MPC backend by
 // defining CPP_MP, GMP_MP or MPC_MP
 #define MPC_MP
@@ -152,22 +152,22 @@ int main(int argc, char **argv)
     {
       A = mpreal((drand48()-0.5)*1);
       B = mpreal((drand48()-0.5)*1);
-      C = mpreal((drand48()-0.5)*1);
-      D = mpreal((drand48()-0.5)*1);
+      //C = mpreal((drand48()-0.5)*1);
+      //D = mpreal((drand48()-0.5)*1);
     
       //printf("CASE 26\n");
 
       cpvmp[4]=mpreal(1.0);
-      cpvmp[3]=C;
+      cpvmp[3]=0.0;
       cpvmp[2]=A;
-      cpvmp[1]=D;
+      cpvmp[1]=0.0;
       cpvmp[0]=B;
 
       Qmp.set_coeff(cpvmp);
 
       Qmp.set_check_always_d20(true);
       Qmp.find_roots(rmp);
-#if 0
+#if 2
       csolREFmp = rmp;
       tmpfact = Qmp.maxfact;
       Qmp.set_check_always_d20(false);
@@ -191,7 +191,7 @@ int main(int argc, char **argv)
           cout << "sol#" << k1 << setprecision(WP) << " " <<  csolmp[k1] << "\n";
         }
 #endif
-#if 0
+#if 1
       if (err > 0.1)
         {
           if (tmpfact > epsfact)
@@ -215,6 +215,6 @@ int main(int argc, char **argv)
         }
 #endif
     }
-  //cout << setprecision(20) << "maxfact=" <<  epsfact << "\n";;
+  cout << setprecision(20) << "maxfact=" <<  epsfact << "\n";;
   exit(-1);
 }
