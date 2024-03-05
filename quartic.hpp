@@ -1455,7 +1455,7 @@ template <class ntype, class cmplx, bool dynamic> void quartic<ntype,cmplx, dyna
   // hence to consider d3 != 0 we require that
   // d3 > meps*min{abs(d2*d),abs(d2*d2*l2*l2),abs(l3*l3*d2)     
   
-  if (check_always_d20 || realcase[0]==-1 || abs(d2) <= fact_d0*(abs(ntype(2).*b/ntype(3.)) + abs(phi0) + l1*l1))
+  if (check_always_d20 || realcase[0]==-1 || abs(d2) <= fact_d0*(abs(ntype(2.)*b/ntype(3.)) + abs(phi0) + l1*l1))
     {
       d3 = d - l3*l3;
       if (realcase[0]==1)
