@@ -158,6 +158,7 @@ class quartic: public numeric_limits<ntype>, public quarticbase<ntype,cmplx, dyn
   inline ntype oqs_calc_err_ldlt(ntype b, ntype c, ntype d, ntype d2, ntype l1, ntype l2, ntype l3);
   inline ntype oqs_calc_err_abcd_cmplx(ntype a, ntype b, ntype c, ntype d, 
                                        cmplx aq, cmplx bq, cmplx cq, cmplx dq);
+  inline ntype oqs_calc_err_d(ntype errmin, ntype d, ntype bq, ntype dq);
   inline ntype oqs_calc_err_abcd(ntype a, ntype b, ntype c, ntype d, ntype aq, ntype bq, ntype cq, ntype dq);
   inline ntype oqs_calc_err_abc(ntype a, ntype b, ntype c, ntype aq, ntype bq, ntype cq, ntype dq); 
   inline void NRabcdCCmplx(cmplx a, cmplx b, cmplx c, cmplx d, cmplx& AQ, cmplx& BQ, cmplx& CQ, cmplx& DQ);
@@ -183,6 +184,16 @@ class quartic: public numeric_limits<ntype>, public quarticbase<ntype,cmplx, dyn
       sum +=(a==cmplx(0))?abs(aq + cq):abs(((aq + cq) - a)/a);
       return sum;
     }
+ 
+  ntype oqs_calc_err_d_ccmplx(ntype errmin, cmplx d, cmplx bq, cmplx dq)
+    {
+      /* Eqs. (68) and (69) in the manuscript */
+      ntype sum;
+      sum = errmin;
+      sum += (d==cmplx(0))?abs(bq*dq):abs((bq*dq-d)/d);
+      return sum;
+    }
+  
   ntype oqs_calc_err_abcd_ccmplx(cmplx a, cmplx b, cmplx c, cmplx d, 
                                  cmplx aq, cmplx bq, cmplx cq, cmplx dq)
     {
@@ -967,6 +978,19 @@ ntype quartic<ntype, cmplx, dynamic>::oqs_calc_err_abcd_cmplx(ntype a, ntype b, 
   sum +=(a==0)?abs(aq + cq):abs(((aq + cq) - a)/a);
   return sum;
 }
+template <class ntype, class cmplx, bool dynamic> ntype quartic<ntype, cmplx, dynamic>::oqs_calc_err_d(ntype errmin, ntype d, ntype bq, ntype dq)
+{
+  /* Eq. (53) in the manuscript for real alpha1 (aq), beta1 (bq), alpha2 (cq) and beta2 (dq)*/
+  ntype sum;
+
+  sum = errmin;
+  if (d==0.0)
+    sum += abs(bq*dq);
+  else
+    sum += abs((bq*dq-d)/d);
+
+  return sum;
+}
 template <class ntype, class cmplx, bool dynamic> ntype quartic<ntype, cmplx, dynamic>::oqs_calc_err_abcd(ntype a, ntype b, ntype c, ntype d, ntype aq, ntype bq, ntype cq, ntype dq)
 {
   /* Eq. (53) in the manuscript for real alpha1 (aq), beta1 (bq), alpha2 (cq) and beta2 (dq)*/
@@ -1437,7 +1461,7 @@ template <class ntype, class cmplx, bool dynamic> void quartic<ntype,cmplx, dyna
     {
       d3 = d - l3*l3;
       if (realcase[0]==1)
-	err0 = oqs_calc_err_abcd(a, b, c, d, aq, bq, cq, dq);
+	err0 = oqs_calc_err_d(errmin, d, bq, dq);
       else if (realcase[0]==0)
 	err0 = oqs_calc_err_abcd_cmplx(a, b, c, d, acx, bcx, ccx, dcx);
       if (d3 <= 0)
@@ -1710,7 +1734,7 @@ template <class ntype, class cmplx, bool dynamic> void quartic<ntype,cmplx, dyna
   if (check_always_d20 || abs(d2) <= fact_d0*(abs(cmplx(2.)*b/cmplx(3.)) + abs(phi0) + abs(l1*l1))) 
     {
       d3 = d - l3*l3;
-      err0 = oqs_calc_err_abcd_ccmplx(a, b, c, d, acx, bcx, ccx, dcx);
+      err0 = oqs_calc_err_d_ccmplx(errmin, d, bcx, dcx);
       acx1 = l1;  
       bcx1 = l3 + sqrt(-d3);
       ccx1 = l1;
