@@ -189,8 +189,8 @@ class quartic: public numeric_limits<ntype>, public quarticbase<ntype,cmplx, dyn
     {
       /* Eqs. (68) and (69) in the manuscript */
       ntype sum;
-      sum = errmin;
-      sum += (d==cmplx(0))?abs(bq*dq):abs((bq*dq-d)/d);
+      sum = (d==cmplx(0))?abs(bq*dq):abs((bq*dq-d)/d);
+      sum += errmin;
       return sum;
     }
   
@@ -982,13 +982,11 @@ template <class ntype, class cmplx, bool dynamic> ntype quartic<ntype, cmplx, dy
 {
   /* Eq. (53) in the manuscript for real alpha1 (aq), beta1 (bq), alpha2 (cq) and beta2 (dq)*/
   ntype sum;
-
-  sum = errmin;
   if (d==0.0)
-    sum += abs(bq*dq);
+    sum = abs(bq*dq);
   else
-    sum += abs((bq*dq-d)/d);
-
+    sum = abs((bq*dq-d)/d);
+  sum += errmin;
   return sum;
 }
 template <class ntype, class cmplx, bool dynamic> ntype quartic<ntype, cmplx, dynamic>::oqs_calc_err_abcd(ntype a, ntype b, ntype c, ntype d, ntype aq, ntype bq, ntype cq, ntype dq)
