@@ -51,15 +51,13 @@ ifeq ($(HBDIR),)
 endif
 endif
 ifeq (,$(findstring intercept,$(CXX)))
-  #CXXHB=$(HBDIR)/bin/g++-13
-  #check if g++-13 exists
+  #check if GNU g++ is installed
   ifneq ("$(wildcard $(HBDIR))","")
     CXXHB=$(shell ls $(HBDIR)/bin/g++-[0-9]* | sort -t - -k 2 -n | tail -1)
     ifneq ("$(wildcard $(CXXHB))","")
        	CXX=$(shell basename $(CXXHB))
         $(info Found GNU $(CXX) from homebrew)
     else	
-        $(info Homebrew installed but I did not find GNU g++)
 	CXX=g++
     endif
   else
