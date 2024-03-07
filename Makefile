@@ -73,7 +73,7 @@ HBLIBS=-lmpc -lmpfr -lgmp -lgmpxx
 HBHDRS=
 endif
 LIBS=$(HBLIBS) 
-CXXFLAGS= -Wall -std=c++17 -O3 
+CXXFLAGS= -Wall -Wno-pessimizing-move -std=c++17 -O3 
 CXXFLAGSMP=$(CXXFLAGS) $(HBHDRS)
 HEADERS=./quartic.hpp ./pvector.hpp 
 LDFLAGS=-lm $(LIBS) 
