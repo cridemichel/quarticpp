@@ -66,6 +66,9 @@ where
 *case* is an integer between 1 and 24, which corresponds to the 24
 cases shown in Table 1 of the ACM paper.
 
+**Copyright © 2025 Cristiano De Michele**
+Permission to make digital or hard copies of all or part of this work for personal or classroom use is granted without fee provided that copies are not made or distributed for profit or commercial advantage and that copies bear this notice and the full citation on the first page. Copyrights for components of this work owned by others than Cristiano De Michele must be honored. Abstracting with credit is permitted. To copy otherwise, or republish, to post on servers or to redistribute to lists, requires prior specific permission and/or a fee. Request permissions from cristiano.demichele@uniroma1.it.
+	
 **Citing**
 
 If you use quarticpp in your research, please consider giving proper attribution by citing the following publication:
@@ -73,5 +76,5 @@ If you use quarticpp in your research, please consider giving proper attribution
 - A.G. Orellana and C. De Michele, Algorithm 1010: Boosting Efficiency in Solving Quartic Equations with No Compromise in Accuracy,
 *ACM Trans. Math. Softw.* **46**, 20:1-20:28 (2020) https://doi.org/10.1145/3386241
 
-	
+
   
