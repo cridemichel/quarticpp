@@ -497,6 +497,9 @@ public:
       fact_d0 = eps05;
       //cout << setprecision(16) << "fact_d0=" << fact_d0 << "\n";
       calc_err_bound=false;
+      // Note: error bounds have to be positive, hence if they turn out to be negative
+      // it means that they have not been calculated
+      errb << -1, -1, -1, -1;
     }
 
   quartic() 
