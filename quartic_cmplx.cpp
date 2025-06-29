@@ -27,12 +27,13 @@ int main(void)
   c[0] = x1c*x2c*x3c*x4c;
 
   Q.set_coeff(c);
+  Q.set_calc_errb(true);
   Q.find_roots(r);
   //r.show("roots");
   int cc=0;
   for (auto& r0: r)
     {
-      cout << setprecision(WP) << "root #" << cc <<  "=" << r0 << "\n";
+      cout << setprecision(WP) << "root #" << cc <<  "=" << r0 << " error=" << Q.get_error_bound(cc) << "\n";
       cout << setprecision(WP) << "p(#" << cc << ")=" << Q.evalpoly(r0) << "\n\n";
       cc++;
     }
