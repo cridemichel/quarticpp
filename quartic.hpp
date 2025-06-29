@@ -21,8 +21,11 @@ public:
   constexpr static int dynamic = false;
   pvector<ntype, 5> coeff;
   pvector<ntype, 5> cmon;
+  pvector<ntype, 5> acmon;
   pvector<cmplx, 5> coeffc;
   pvector<cmplx, 5> cmonc;
+  pvector<ntype, 4> errb;
+ 
   int is_cmplx;
 
   void set_coeff(pvector<ntype,5> v)
@@ -59,15 +62,19 @@ public:
   constexpr static int dynamic = true;
   pvector<ntype> coeff;
   pvector<ntype> cmon;
+  pvector<ntype> acmon;
   pvector<cmplx> cmonc;
   pvector<cmplx> coeffc;
+  pvector<ntype> errb;
   int is_cmplx;
   quartic_base_dynamic()
     {
       coeff.allocate(5);
       cmon.allocate(5);
+      acmon.allocate(5);
       cmonc.allocate(5);
       coeffc.allocate(5);
+      errb.allocate(4);
     }
   void set_coeff(pvector<ntype,-1> v)
     {
@@ -101,11 +108,14 @@ typename std::conditional<(dynamic==false), quartic_base_static <ntype, cmplx>,
 template <class ntype, class cmplx=complex<ntype>, bool dynamic=false> 
 class quartic: public numeric_limits<ntype>, public quarticbase<ntype,cmplx, dynamic> {
   const int n=4, N=4;
+  bool calc_err_bound;
   using quarticbase<ntype,cmplx,dynamic>::coeff;
   using quarticbase<ntype,cmplx,dynamic>::cmon;
+  using quarticbase<ntype,cmplx,dynamic>::acmon;
   using quarticbase<ntype,cmplx,dynamic>::coeffc;
   using quarticbase<ntype,cmplx,dynamic>::cmonc;
   using quarticbase<ntype,cmplx,dynamic>::is_cmplx;
+  using quarticbase<ntype,cmplx,dynamic>::errb;
   using roots_vtype = typename std::conditional<(dynamic==false), pvector<cmplx, 4>,
         pvector<cmplx, -1>>::type;
 
@@ -233,9 +243,65 @@ class quartic: public numeric_limits<ntype>, public quarticbase<ntype,cmplx, dyn
         }   
     }
 
+  // evaluate polynomail via Horner's formula 
+  ntype calcerrb(cmplx r0)
+    {
+      ntype s, sp=0.0, abx; 
+      cmplx p, p1=cmplx(0,0);
+      int j;
+      s = acmon[n];
+      p = cmon[n];
+      abx = abs(r0);
+      for (j=n-1; j >=0; j--) 
+        {
+          sp = sp*abx + s;
+          s=abx*s+acmon[j];
+          p1 = p1*r0 + p;
+          p = p*r0 + cmon[j];
+        }
+      return ntype(n)*(abs(p)+meps*s)/abs(abs(p1)-meps*sp);
+      //return ntype(n)*(abs(evalpoly(r0))+meps*s)/abs(evaldpoly(r0));
+    }
 
+  // evaluate polynomail via Horner's formula 
+  ntype calcerrb_cmplx(cmplx r0)
+    {
+      ntype s, sp=0.0, abx; 
+      cmplx p, p1=cmplx(0,0);
+      int j;
+      s = acmon[4];
+      p = cmonc[4];
+      abx = abs(r0);
+      for (j=3; j >=0; j--) 
+        {
+          sp = sp*abx + s;
+          s=abx*s+acmon[j];
+          p1 = p1*r0 + p;
+          p = p*r0 + cmonc[j];
+        }
+      return ntype(n)*(abs(p)+meps*s)/abs(abs(p1)-meps*sp);
+      //return ntype(n)*(abs(evalpoly(r0))+meps*s)/abs(evaldpoly(r0));
+    }
+ 
 public:
-
+  void print_error_bounds(void)
+    {
+      int i=0;
+      for (auto& eb: errb)
+        { 
+          cout << setprecision(maxdigits) << "errbound[" << i << "]=" << eb << "\n"; 
+          i++;
+        }
+    }
+  ntype get_error_bound(int i)
+    {
+      return errb[i];
+    }
+  void set_calc_errb(bool v)
+    {
+      calc_err_bound=v;
+    }
+  
   void set_fact_d0(ntype K)
     {
       fact_d0 = K;
@@ -374,11 +440,28 @@ public:
       else if (is_cmplx == 0)
         {
           oqs_quartic_solver(roots);
+          if (calc_err_bound)
+            {
+              for (int i=0; i < 4; i++)
+                {
+                  errb[i] = calcerrb(roots[i]);
+                  //cout << "errb[" << i << "]=" << errb[i] << "\n";
+                }
+            }
         }
       else
         {
           oqs_quartic_solver_cmplx(roots);
+          if (calc_err_bound)
+            {
+              for (int i=0; i < 4; i++)
+                {
+                  errb[i] = calcerrb_cmplx(roots[i]);
+                  //cout << "errb[" << i << "]=" << errb[i] << "\n";
+                }
+            }
         }
+     
     }
   // get machine precision for "ntype" type (ntype can float, double, long double)
   ntype epsilon()
@@ -413,6 +496,7 @@ public:
       check_always_d20 = false;
       fact_d0 = eps05;
       //cout << setprecision(16) << "fact_d0=" << fact_d0 << "\n";
+      calc_err_bound=false;
     }
 
   quartic() 

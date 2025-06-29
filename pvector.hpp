@@ -257,11 +257,11 @@ template <class ntype,int NT> class pvecbasedyn: public pvecdyn<ntype,NT> {
   //int nr, nc;
 public:
   constexpr static int dynamic = true;
-  pvecbasedyn<ntype,NT>(int NN): pvecdyn<ntype,NT>(NN)
+  pvecbasedyn(int NN): pvecdyn<ntype,NT>(NN)
   {
     // empty body
   }
-  pvecbasedyn<ntype,NT>(): pvecdyn<ntype,NT>()
+  pvecbasedyn(): pvecdyn<ntype,NT>()
   {
     // empty body
   }
@@ -313,12 +313,12 @@ public:
     {
       maxdigits=p;
     }
-  pvector<ntype,NT>(int NN): pvecbase<ntype,NT>(NN)
+  pvector(int NN): pvecbase<ntype,NT>(NN)
     {
       // empty body
     }
-  pvector<ntype,NT>() = default;
-  pvector<ntype,NT>(ntype a, ntype b=0, ntype c=0, ntype d=0)
+  pvector() = default;
+  pvector(ntype a, ntype b=0, ntype c=0, ntype d=0)
     {
       if (N >= 1)
         v[0]=a;
@@ -358,7 +358,7 @@ public:
     }
   // constructor with AnOpV argument triggers evaluation of lazy expression
   template<typename Lhs, typename Rhs, int tipo>
-    pvector<ntype,NT>(AnOpV<ntype,NT, tipo, Lhs, Rhs> const& op) {
+    pvector(AnOpV<ntype,NT, tipo, Lhs, Rhs> const& op) {
       for (int i=0; i < N; i++)
 	v[i] = op.get_v(i);
     }

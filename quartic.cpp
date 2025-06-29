@@ -15,12 +15,14 @@ int main(void)
   //Q.set_check_always_d20(true);
   Q.set_coeff(c);
   Q.show("p(x)="); 
+  Q.set_calc_errb(true);
   Q.find_roots(r);
+
   r.show("roots");
   int cc=0;
   for (auto& r0: r)
     {
-      cout << setprecision(16) << "root #" << cc <<  "=" << r0 << "\n";
+      cout << setprecision(16) << "root #" << cc <<  "=" << r0 << " error=" << Q.get_error_bound(cc) << "\n";
       cout << setprecision(16) << "p(#" << cc << ")=" << Q.evalpoly(r0) << "\n\n";
       cc++;
     }
