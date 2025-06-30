@@ -25,7 +25,7 @@ public:
   pvector<cmplx, 5> coeffc;
   pvector<cmplx, 5> cmonc;
   pvector<ntype, 4> errb;
-  pvector<ntype, 4> r0s; 
+  pvector<cmplx, 4> r0s; 
   int is_cmplx;
 
   void set_coeff(pvector<ntype,5> v)
@@ -252,7 +252,26 @@ class quartic: public numeric_limits<ntype>, public quarticbase<ntype,cmplx, dyn
           roots[1]=cmplx(-a/2,-sqrtd/2);      
         }   
     }
-
+  // evaluate polynomial via Horner's formula 
+  ntype calcerrb_cmplx(cmplx r0)
+    {
+      ntype s, sp=0.0, abx; 
+      cmplx p, p1=cmplx(0,0);
+      int j;
+      s = acmon[n];
+      p = cmonc[n];
+      abx = abs(r0);
+      for (j=n-1; j >=0; j--) 
+        {
+          sp = sp*abx + s;
+          s=abx*s + acmon[j];
+          p1 = p1*r0 + p;
+          p = p*r0 + cmonc[j];
+        }
+      return ntype(n)*(abs(p)+meps*s)/abs(abs(p1)-meps*sp);
+      //return ntype(n)*(abs(evalpoly(r0))+meps*s)/abs(evaldpoly(r0));
+    }
+ 
   // evaluate polynomail via Horner's formula 
   ntype calcerrb(cmplx r0)
     {
@@ -268,27 +287,6 @@ class quartic: public numeric_limits<ntype>, public quarticbase<ntype,cmplx, dyn
           s=abx*s + acmon[j];
           p1 = p1*r0 + p;
           p = p*r0 + cmon[j];
-          //cout << "p=" << p << " s=" << s << " acmon=" << acmon[j] << " cmon=" << cmon[j] << "\n";
-        }
-      return ntype(n)*(abs(p)+meps*s)/abs(abs(p1)-meps*sp);
-      //return ntype(n)*(abs(evalpoly(r0))+meps*s)/abs(evaldpoly(r0));
-    }
-
-  // evaluate polynomail via Horner's formula 
-  ntype calcerrb_cmplx(cmplx r0)
-    {
-      ntype s, sp=0.0, abx; 
-      cmplx p, p1=cmplx(0,0);
-      int j;
-      s = acmon[n];
-      p = cmonc[n];
-      abx = abs(r0);
-      for (j=n-1; j >=0; j--) 
-        {
-          sp = sp*abx + s;
-          s=abx*s + acmon[j];
-          p1 = p1*r0 + p;
-          p = p*r0 + cmonc[j];
         }
       return ntype(n)*(abs(p)+meps*s)/abs(abs(p1)-meps*sp);
       //return ntype(n)*(abs(evalpoly(r0))+meps*s)/abs(evaldpoly(r0));

@@ -33,7 +33,8 @@ int main(void)
   int cc=0;
   for (auto& r0: r)
     {
-      cout << setprecision(WP) << "root #" << cc <<  "=" << r0 << " error bound=" << Q.get_error_bound(cc) << "\n";
+      cout << setprecision(WP) << "root #" << cc <<  "=" << r0 << "; error bound=" << Q.get_error_bound(cc) << "; relative error bound=" << 
+       Q.get_relerror_bound(cc) << "\n";
       cout << setprecision(WP) << "p(#" << cc << ")=" << Q.evalpoly(r0) << "\n\n";
       cc++;
     }
