@@ -107,7 +107,6 @@ public:
         }
     }
 
-
   ~quartic_base_dynamic() = default;
 };
 
