@@ -278,10 +278,10 @@ class quartic: public numeric_limits<ntype>, public quarticbase<ntype,cmplx, dyn
       ntype s, sp=0.0, abx; 
       cmplx p, p1=cmplx(0,0);
       int j;
-      s = acmon[4];
-      p = cmonc[4];
+      s = acmon[n];
+      p = cmonc[n];
       abx = abs(r0);
-      for (j=3; j >=0; j--) 
+      for (j=n-1; j >=0; j--) 
         {
           sp = sp*abx + s;
           s=abx*s+acmon[j];
