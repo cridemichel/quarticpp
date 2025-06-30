@@ -38,6 +38,7 @@ public:
         {
           cmon[i] = coeff[i]/coeff[n];
           cmonc[i] = cmon[i];
+          acmon[i] = abs(cmon[i]);
         }
     }
   void set_coeff(pvector<cmplx,5> v)
@@ -46,7 +47,10 @@ public:
       coeffc = v;
       cmonc[n] = 1.0;
       for (int i=n-1; i >=0; i--)
-        cmonc[i] = coeffc[i]/coeffc[n];
+        {
+          cmonc[i] = coeffc[i]/coeffc[n];
+          acmon[i] = abs(cmonc[i]);
+         }
     }
 
   quartic_base_static()
