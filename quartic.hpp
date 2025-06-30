@@ -25,7 +25,7 @@ public:
   pvector<cmplx, 5> coeffc;
   pvector<cmplx, 5> cmonc;
   pvector<ntype, 4> errb;
- 
+  pvector<ntype, 4> r0s; 
   int is_cmplx;
 
   void set_coeff(pvector<ntype,5> v)
@@ -70,6 +70,7 @@ public:
   pvector<cmplx> cmonc;
   pvector<cmplx> coeffc;
   pvector<ntype> errb;
+  pvector<cmplx> r0s;
   int is_cmplx;
   quartic_base_dynamic()
     {
@@ -79,6 +80,7 @@ public:
       cmonc.allocate(5);
       coeffc.allocate(5);
       errb.allocate(4);
+      r0s.allocate(4);
     }
   void set_coeff(pvector<ntype,-1> v)
     {
@@ -124,6 +126,7 @@ class quartic: public numeric_limits<ntype>, public quarticbase<ntype,cmplx, dyn
   using quarticbase<ntype,cmplx,dynamic>::cmonc;
   using quarticbase<ntype,cmplx,dynamic>::is_cmplx;
   using quarticbase<ntype,cmplx,dynamic>::errb;
+  using quarticbase<ntype,cmplx,dynamic>::r0s;
   using roots_vtype = typename std::conditional<(dynamic==false), pvector<cmplx, 4>,
         pvector<cmplx, -1>>::type;
 
@@ -302,6 +305,14 @@ public:
           i++;
         }
     }
+
+  ntype get_relerror_bound(int i)
+    {
+      ntype ar0;
+      ar0 = abs(r0s[i]);
+      return (ar0==0)?errb[i]:errb[i]/ar0;
+    }
+  
   ntype get_error_bound(int i)
     {
       return errb[i];
@@ -453,6 +464,7 @@ public:
             {
               for (int i=0; i < 4; i++)
                 {
+                  r0s[i] = roots[i]; // r0s are used to calculate relative error bounds if requested
                   errb[i] = calcerrb(roots[i]);
                   //cout << "errb[" << i << "]=" << errb[i] << "\n";
                 }
@@ -465,6 +477,7 @@ public:
             {
               for (int i=0; i < 4; i++)
                 {
+                  r0s[i] = roots[i]; // r0s are used to calculate relative error bounds if requested
                   errb[i] = calcerrb_cmplx(roots[i]);
                   //cout << "errb[" << i << "]=" << errb[i] << "\n";
                 }
