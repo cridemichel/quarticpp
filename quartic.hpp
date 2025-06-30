@@ -263,7 +263,7 @@ class quartic: public numeric_limits<ntype>, public quarticbase<ntype,cmplx, dyn
       for (j=n-1; j >=0; j--) 
         {
           sp = sp*abx + s;
-          s=abx*s+acmon[j];
+          s=abx*s + acmon[j];
           p1 = p1*r0 + p;
           p = p*r0 + cmon[j];
           //cout << "p=" << p << " s=" << s << " acmon=" << acmon[j] << " cmon=" << cmon[j] << "\n";
@@ -284,7 +284,7 @@ class quartic: public numeric_limits<ntype>, public quarticbase<ntype,cmplx, dyn
       for (j=n-1; j >=0; j--) 
         {
           sp = sp*abx + s;
-          s=abx*s+acmon[j];
+          s=abx*s + acmon[j];
           p1 = p1*r0 + p;
           p = p*r0 + cmonc[j];
         }
