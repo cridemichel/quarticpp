@@ -22,7 +22,7 @@ int main(void)
   int cc=0;
   for (auto& r0: r)
     {
-      cout << setprecision(16) << "root #" << cc <<  "=" << r0 << " absolute error=" << Q.get_error_bound(cc) << "\n";
+      cout << setprecision(16) << "root #" << cc <<  "=" << r0 << " error bound=" << Q.get_error_bound(cc) << "\n";
       cout << setprecision(16) << "p(#" << cc << ")=" << Q.evalpoly(r0) << "\n\n";
       cc++;
     }
