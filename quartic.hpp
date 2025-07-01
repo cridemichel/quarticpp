@@ -480,7 +480,6 @@ public:
                 }
             }
         }
-     
     }
   // get machine precision for "ntype" type (ntype can float, double, long double)
   ntype epsilon()
