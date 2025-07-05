@@ -253,7 +253,7 @@ class quartic: public numeric_limits<ntype>, public quarticbase<ntype,cmplx, dyn
         }   
     }
   // evaluate polynomial via Horner's formula 
-  ntype calcerrb_cmplx(cmplx r0)
+  inline ntype calcerrb_cmplx(cmplx r0)
     {
       ntype s, sp=0.0, abx; 
       cmplx p, p1=cmplx(0,0);
@@ -273,7 +273,7 @@ class quartic: public numeric_limits<ntype>, public quarticbase<ntype,cmplx, dyn
     }
  
   // evaluate polynomail via Horner's formula 
-  ntype calcerrb(cmplx r0)
+  inline ntype calcerrb(cmplx r0)
     {
       ntype s, sp=0.0, abx; 
       cmplx p, p1=cmplx(0,0);
